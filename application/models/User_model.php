@@ -12,6 +12,10 @@ class User_model extends CI_Model
         return ($this->get_user() !== NULL);
     }
 
+    public function admin() {
+        return (isset($_SESSION['auth_rights']) && $_SESSION['auth_rights'] == 1);
+    }
+
     public function get_user() {
         if (isset($_SESSION['auth_user'])) return $_SESSION['auth_user'];
         return NULL;
@@ -32,6 +36,7 @@ class User_model extends CI_Model
         if ($user)
         {
             // Complete the login
+            $_SESSION['auth_rights'] = $user->rights;
             return $_SESSION['auth_user'] =  $username;
         }
 
@@ -40,7 +45,16 @@ class User_model extends CI_Model
     }
 
     public function logout() {
+        unset($_SESSION['auth_rights']);
         unset($_SESSION['auth_user']);
+    }
+
+    public function create($login, $password, $rights)
+    {
+        $this->db->set('login', $login);
+        $this->db->set('password', $this->hash($password));
+        $this->db->set('rights', $rights);
+        $result = $this->db->insert('users');
     }
 
     public function load($login, $password)

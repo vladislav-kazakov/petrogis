@@ -1,3 +1,4 @@
+<div class="bottom-20"></div>
 <div id="map_canvas" style="width:800px; height:600px; float:left; margin-right: 20px;"></div>
 <div id="search_container">
     <form method="post">
@@ -26,14 +27,14 @@ var markers = [];
         //открывает infowindows при наведении курсора мыши
         marker.addListener('mouseover', (function(marker, infowindow, info) {
             return function() {
-                var img_str = info["image"] != null ? '<img src="' + info["image"] + '" width="170" height="120">':""
+                var img_str = info["image"] != null ? '<div class="div-infowindow"><img class="img-infowindow" src="' + info["image"] + '"></div>':""
                 infowindow.setContent('<p>' + info["name"]+'</p>' + img_str);
                 infowindow.open(map, marker);
             }
         })(marker, infowindow, arr[i]));
         marker.addListener('mousedown', (function(marker, infowindow, info) {
             return function() {
-                var img_str = info["image"] != null ? '<img src="' + info["image"] + '" width="170" height="120">':""
+                var img_str = info["image"] != null ? '<div class="div-infowindow"><img class="img-infowindow" src="' + info["image"] + '"></div>':""
                 infowindow.setContent('<p>' + info["name"]+'</p>' + img_str);
                 infowindow.open(map, marker);
             }
@@ -44,6 +45,11 @@ var markers = [];
                 infowindow.close(map, marker);
             }
         })(marker, infowindow));
+        marker.addListener('click', (function(marker, infowindow, info) {
+            return function() {
+                window.location.href = "petroglyph/" + info['id'];
+            }
+        })(marker, infowindow, arr[i]));
     }
     var markerClusterer = new MarkerClusterer(map, markers,
         {

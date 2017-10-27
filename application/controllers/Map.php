@@ -21,7 +21,8 @@ class Map extends CI_Controller {
         $json_petroglyphs = array();
         foreach($petroglyphs as $petroglyph) {
             $image = $petroglyph->image != null ? base_url() ."petroglyph/image/" . $petroglyph->id : null;
-            array_push($json_petroglyphs, array('name' => $petroglyph->name,
+            array_push($json_petroglyphs, array('id' => $petroglyph->id ,
+                                                'name' => $petroglyph->name,
                                                 'lat' => $petroglyph->lat,
                                                 'lng' => $petroglyph->lng,
                                                 'image' => $image
