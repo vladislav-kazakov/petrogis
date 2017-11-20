@@ -48,8 +48,59 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
+-----------------
+$route['products/([a-zA-Z]+)/edit/(\d+)'] = function ($product_type, $id)
+{
+    return 'catalog/product_edit/' . strtolower($product_type) . '/' . $id;
+};
 */
-$route['(:any)/(:num)'] = '$1/view/$2';
+//$this->config->config['canonical_route'] = "/$controller";
+$this->config->config['canonical_route'] = "";
+
+$route['en'] = function ()
+{
+    $this->config->config['language'] = 'english';
+    $this->config->config['canonical_route'] = "";
+    return "";
+};
+$route['en/(:any)'] = function ($controller)
+{
+    $this->config->config['language'] = 'english';
+    $this->config->config['canonical_route'] = "/$controller";
+    return "/$controller";
+};
+$route['en/(:any)/(:num)'] = function ($controller, $id)
+{
+    $this->config->config['language'] = 'english';
+    $this->config->config['canonical_route'] = "/$controller/$id";
+    return "/$controller/view/$id";
+};
+
+$route['en/(:any)/(:any)/(:num)'] = function ($controller, $action, $id)
+{
+    $this->config->config['language'] = 'english';
+    $this->config->config['canonical_route'] = "/$controller/$action/$id";
+    return "/$controller/$action/$id";
+};
+
+$route['(:any)'] = function ($controller)
+{
+    $this->config->config['canonical_route'] = "/$controller";
+    return "/$controller";
+};
+$route['(:any)/(:num)'] = function ($controller, $id)
+{
+    $this->config->config['canonical_route'] = "/$controller/$id";
+    return "/$controller/view/$id";
+};
+
+$route['(:any)/(:any)/(:num)'] = function ($controller, $action, $id)
+{
+    $this->config->config['canonical_route'] = "/$controller/$action/$id";
+    return "/$controller/$action/$id";
+};
+
+//$route['(:any)/(:num)'] = '$1/view/$2';
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';

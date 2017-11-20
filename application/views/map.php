@@ -1,61 +1,28 @@
 <div class="bottom-20"></div>
 <div id="map_canvas" style="width:800px; height:600px; float:left; margin-right: 20px;"></div>
+<div>
+    <a href="?map_provider=google">Google Maps</a>
+    <a href="?map_provider=yandex">Yandex Maps</a>
+</div>
 <div id="search_container">
     <form method="post">
-        <input type="text" name="name" placeholder="название...">
-        <button type="submit" name="filter" class="btn btn-default">Показать</button>
+        <input type="text" name="name" placeholder="<?=lang("title");?>...">
+        <button type="submit" name="filter" class="btn btn-default"><?=lang("filter");?></button>
     </form>
 </div>
 
-<script type="text/javascript" src="assets/js/jquery.cookie.js"></script>
-<script type="text/javascript" src = "assets/js/map.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeYhPhJAnwj95GXDg5BRT7Q2dTj303dQU&callback=initMap"
-        type="text/javascript"></script>
-<script type="text/javascript" src="assets/js/markerclusterer/src/markerclusterer.js"></script>
 <script type="text/javascript">
     var arr = <?=$json_petroglyphs?>;
-var markers = [];
-    for (var i =0; i<arr.length; i++)
-    {
-        var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(arr[i]["lat"], arr[i]["lng"]),
-            map: map,
-            title: arr[i]["name"]
-        });
-        markers.push(marker);
-        var infowindow = new google.maps.InfoWindow();
-        //открывает infowindows при наведении курсора мыши
-        marker.addListener('mouseover', (function(marker, infowindow, info) {
-            return function() {
-                var img_str = info["image"] != null ? '<div class="div-infowindow"><img class="img-infowindow" src="' + info["image"] + '"></div>':""
-                infowindow.setContent('<p>' + info["name"]+'</p>' + img_str);
-                infowindow.open(map, marker);
-            }
-        })(marker, infowindow, arr[i]));
-        marker.addListener('mousedown', (function(marker, infowindow, info) {
-            return function() {
-                var img_str = info["image"] != null ? '<div class="div-infowindow"><img class="img-infowindow" src="' + info["image"] + '"></div>':""
-                infowindow.setContent('<p>' + info["name"]+'</p>' + img_str);
-                infowindow.open(map, marker);
-            }
-        })(marker, infowindow, arr[i]));
-        //закрывает infowindows при отведении курсора мыши
-        marker.addListener('mouseout', (function(marker, infowindow) {
-            return function() {
-                infowindow.close(map, marker);
-            }
-        })(marker, infowindow));
-        marker.addListener('click', (function(marker, infowindow, info) {
-            return function() {
-                window.location.href = "petroglyph/" + info['id'];
-            }
-        })(marker, infowindow, arr[i]));
-    }
-    var markerClusterer = new MarkerClusterer(map, markers,
-        {
-            imagePath: 'assets/js/markerclusterer/images/m',
-            maxZoom: 17,
-            gridSize: 20,
-            styles: null
-        });
 </script>
+
+<script type="text/javascript" src="/assets/js/jquery.cookie.js"></script>
+<?if ($map_provider == 'google'):?>
+    <script type="text/javascript" src="/assets/js/markerclusterer/src/markerclusterer.js"></script>
+    <script type="text/javascript" src = "/assets/js/map.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeYhPhJAnwj95GXDg5BRT7Q2dTj303dQU&callback=initMap&language=<?=lang("lang")==""?"ru":"en"?>"
+            type="text/javascript"></script>
+<?else:?>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=<?=lang("lang")==""?"ru_RU":"en_US"?>&mode=debug" type="text/javascript"></script>
+    <script src="/assets/js/tiler-converter.js" type="text/javascript"></script>
+    <script type="text/javascript" src = "/assets/js/map_yandex.js"></script>
+<?endif?>

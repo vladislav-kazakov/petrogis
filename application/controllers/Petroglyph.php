@@ -16,6 +16,7 @@ class Petroglyph extends CI_Controller {
         $petroglyphs = $this->petroglyph_model->load_list();
         $this->load->view('petroglyph/list', array(
             'petroglyphs' => $petroglyphs,
+            'admin' => $this->user_model->admin()
             //'message' => $_SERVER['REQUEST_URI']
         ));
         //$_SESSION['referrer'] = $_SERVER['REQUEST_URI'];
@@ -31,7 +32,8 @@ class Petroglyph extends CI_Controller {
         $this->load->view('header', array(
             'menu' => 'petroglyph',
             'logged_in' => $logged_in,
-            'username' => $this->user_model->get_user()
+            'username' => $this->user_model->get_user(),
+            'admin' => $this->user_model->admin()
         ));
 
         $petroglyph_id = $id;// $this->input->get('id');

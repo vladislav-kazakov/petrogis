@@ -2,14 +2,17 @@
     document.cookie = "referrer=" + document.URL + ";path=/";
 </script>
 <?if (isset($message)) echo $message;?>
-<h1>Список петроглифов</h1>
+<h1><?=lang("list_of_petroglyphs")?></h1>
 <?foreach ($petroglyphs as $petroglyph):?>
     #<?=$petroglyph->id?>. <a href="petroglyph/<?=$petroglyph->id?>"><?=$petroglyph->name?></a>
-    (<a href="petroglyph/admin/<?=$petroglyph->id?>">Редактировать</a>)
-    (<a href="petroglyph/delete/<?=$petroglyph->id?>">Удалить</a>)
+    <?if ($admin):?>
+        (<a href="petroglyph/admin/<?=$petroglyph->id?>"><?=lang("edit");?></a>)
+        (<a href="petroglyph/delete/<?=$petroglyph->id?>"><?=lang("delete");?></a>)
+    <?endif?>
         <br>
 <?endforeach?>
-
+<?if ($admin):?>
 <form action="petroglyph/admin">
-    <button class="btn btn-default">Добавить петроглиф</button>
+    <button class="btn btn-default"><?=lang("add_petroglyph");?></button>
 </form>
+<?endif?>

@@ -28,9 +28,15 @@ class Map extends CI_Controller {
                                                 'image' => $image
                 ));
         }
-
+        $map_provider = 'google';
+        if (isset($_GET['map_provider']))
+        {
+            setcookie('map_provider', $_GET['map_provider'], time()+60*60*24*30 , "/");
+            $map_provider = $_GET['map_provider'];
+        }
+        else if (isset($_COOKIE['map_provider']) && $_COOKIE['map_provider'] == 'yandex') $map_provider = 'yandex';
         $json_petroglyphs = json_encode ($json_petroglyphs, JSON_UNESCAPED_UNICODE);
-        $this->load->view('map', array('json_petroglyphs' => $json_petroglyphs));
+        $this->load->view('map', array('json_petroglyphs' => $json_petroglyphs, 'map_provider' => $map_provider));
 
         $this->load->view('footer');
     }

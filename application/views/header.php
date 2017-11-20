@@ -1,4 +1,3 @@
-<?$this->load->helper('url');?>
 <html>
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
@@ -6,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>ГИС Петролгифы</title>
+    <title><?=lang("gis_petroglyphs");?></title>
     <!-- Custom styles for this template -->
     <link href="<?=base_url()?>assets/css/style.css" rel="stylesheet">
 
@@ -32,41 +31,41 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="<?=base_url()?>">ГИС Петроглифы</a>
+            <a class="navbar-brand" href="<?=base_url()?><?=lang("lang");?>"><?=lang("gis_petroglyphs");?></a>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
+        <div id="navbar">
             <ul class="nav navbar-nav">
-                <li class="<?if ($menu=='map'):?>active<?endif?>"><a href="<?=base_url()?>map">Карта</a></li>
-                <li class="<?if ($menu=='petroglyph'):?>active<?endif?>"><a href="<?=base_url()?>petroglyph">Петроглифы</a></li>
+                <li class="<?if ($menu=='map'):?>active<?endif?>"><a href="<?=base_url().lang("lang")?>map"><?=lang("menu_map");?></a></li>
+                <li class="<?if ($menu=='petroglyph'):?>active<?endif?>"><a href="<?=base_url().lang("lang");?>petroglyph"><?=lang("menu_petroglyphs");?></a></li>
                 <!--li class="<?if ($menu=='contact'):?>active<?endif?>"><a href="#contact">Contact</a></li>
                 <li class="<?if ($menu=='signup'):?>active<?endif?>"><a href="#signup">Sign up</a></li-->
             </ul>
-            <?if ($logged_in):?>
-            <div class="collapse navbar-collapse navbar-right">
+
+            <div class="navbar-right">
                 <p class="navbar-text">
-                    Здравствуйте, <?=$username?>!
+                    <a class="navbar-link active" href="<?=$this->config->config['canonical_route']?>">ru</a> |
+                    <a class="navbar-link" href="/en<?=$this->config->config['canonical_route']?>">en</a>
                 </p>
-                <form class="navbar-form navbar-right" action="<?=base_url()?>logout" method="post">
-                    <button type="submit" class="btn btn-success">Выйти</button>
+
+                <?if ($logged_in):?>
+                    <p class="navbar-text">
+                        <?=lang("hello");?>, <?=$username?>!
+                    </p>
+                    <form class="navbar-form navbar-right" action="<?=base_url().lang("lang")?>logout" method="post">
+                        <button type="submit" class="btn btn-success"><?=lang("logout");?></button>
+                    </form>
+                <?else:?>
+                <form class="navbar-form navbar-right" action="<?=base_url().lang("lang")?>login" method="post">
+                    <div class="form-group">
+                        <input type="text" name="email" placeholder="Email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success"><?=lang("login");?></button>
                 </form>
+                <?endif?>
             </div>
-            <?else:?>
-            <form class="navbar-form navbar-right" action="<?=base_url()?>login" method="post">
-                <div class="form-group">
-                    <input type="text" name="email" placeholder="Email" class="form-control">
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" placeholder="Password" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-success">Войти</button>
-            </form>
-            <?endif?>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
