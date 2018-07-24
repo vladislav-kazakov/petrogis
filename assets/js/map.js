@@ -20,11 +20,82 @@ function initMap() {
         mapTypeId: type_id
 
     });
-/*
+
+        imageMapType = new google.maps.ImageMapType(
+            {getTileUrl: function(coord, zoom) {
+                return '/assets/google_tiles/' + zoom + '/' + coord.x + '/' + coord.y + '.png';
+
+                //return '/assets/tiles/' + zoom + '/tile-' + coord.x + '-' + coord.y + '.png';
+                //return "http://sat04"/*+((coord.x+coord.y)%5)*/+".maps.yandex.net/tiles?l=sat&v=2.16.0&x=" +
+                //    coord.x + "&y=" + coord.y + "&z=" + zoom + "";
+            },
+                tileSize: new google.maps.Size(256, 256),
+                isPng: true,
+                alt: "Aero",
+                name: "Aero",
+                maxZoom: 23});
+    map.overlayMapTypes.insertAt(0, imageMapType);
+
+    /*     map.setOptions({mapTypeControlOptions: {mapTypeIds: [google.maps.MapTypeId.ROADMAP, "Yandex"]} });
+
+       imageMapType.projection = new function(){
+            this.pixelOrigin_ = new google.maps.Point(128,128);
+            var MERCATOR_RANGE = 256;
+            this.pixelsPerLonDegree_ = MERCATOR_RANGE / 360;
+            this.pixelsPerLonRadian_ = MERCATOR_RANGE / (2 * Math.PI);
+
+            this.fromLatLngToPoint = function(latLng) {
+                function atanh(x) {
+                    return 0.5*Math.log((1+x)/(1-x));
+                }
+                function degreesToRadians(deg) {
+                    return deg * (Math.PI / 180);
+                }
+                function bound(value, opt_min, opt_max) {
+                    if (opt_min != null) value = Math.max(value, opt_min);
+                    if (opt_max != null) value = Math.min(value, opt_max);
+                    return value;
+                }
+
+                var origin = this.pixelOrigin_;
+                var exct = 0.0818197;
+                var z = Math.sin(latLng.lat()/180*Math.PI);
+                return new google.maps.Point(origin.x + latLng.lng() *this.pixelsPerLonDegree_,
+                    Math.abs(origin.y - this.pixelsPerLonRadian_*(atanh(z)-exct*atanh(exct*z))));
+            };
+
+            this.fromPointToLatLng = function(point) {
+                var origin = this.pixelOrigin_;
+                var lng = (point.x - origin.x) / this.pixelsPerLonDegree_;
+                var latRadians = (point.y - origin.y) / -this.pixelsPerLonRadian_;
+                var lat = Math.abs((2*Math.atan(Math.exp(latRadians))-Math.PI/2)*180/Math.PI);
+                var Zu = lat/(180/Math.PI);
+                var Zum1 = Zu+1;
+                var exct = 0.0818197;
+                var yy = -Math.abs(((point.y)-128));
+                while (Math.abs(Zum1-Zu)>0.0000001){
+                    Zum1 = Zu;
+                    Zu = Math.asin(1-((1+Math.sin(Zum1))*Math.pow(1-exct*Math.sin(Zum1),exct))
+                        / (Math.exp((2*yy)/-(256/(2*Math.PI)))*Math.pow(1+exct*Math.sin(Zum1),exct)));
+                }
+                if (point.y>256/2) {
+                    lat=-Zu*180/Math.PI;
+                } else {
+                    lat=Zu*180/Math.PI;
+                }
+                return new google.maps.LatLng(lat, lng);
+            };
+
+            return this;
+        }
+
+        map.mapTypes.set('Yandex', imageMapType);
+        map.setMapTypeId('Yandex');
+    */
     // Insert this overlay map type as the first overlay map type at
     // position 0. Note that all overlay map types appear on top of
     // their parent base map.
-    map.overlayMapTypes.insertAt(
+/*    map.overlayMapTypes.insertAt(
         0, new CoordMapType(new google.maps.Size(256, 256)));
 
     function CoordMapType(tileSize) {
@@ -50,13 +121,15 @@ function initMap() {
         west: 88.059093,
         east: 88.078952
     };
-
+    */
+/*
     yandexOverlay = new google.maps.GroundOverlay(
         'assets/img/map2.png',
         imageBounds);
     yandexOverlay.setMap(map);
     yandexOverlay.setOpacity(1.0);
 */
+
     map.addListener('center_changed', function() {
         var d = new Date();
         d.setTime(d.getTime() + (365*24*60*60*1000));

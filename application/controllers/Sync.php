@@ -21,28 +21,24 @@ class Sync extends CI_Controller {
     public function upload()
     {
 //        $petroglyph_id = $this->request->param('id');
-        $post = $this->request->post();
-        if ($post) {
-            $petroglyph = ORM::factory('Petroglyph')->where('uuid', '=', $post['uuid'])->find();
-            if ($petroglyph->loaded()) return;
-            $petroglyph = new Model_Petroglyph();
+        //$post = $this->input->post;
+        if ($this->input->post('uuid')) {
+            if ($this->petroglyph_model->loadbyUuid($this->input->post('uuid'))) return;
+            $data = array();
 
-            $petroglyph->uuid = $this->input->post('uuid');
-            $petroglyph->name = $this->input->post('name');
-            $petroglyph->lat = $this->input->post('lat');
-            $petroglyph->lng = $this->input->post('lng');
-          //  if (isset($post['method'])) $petroglyph->method = $post['method'];
-          //  if (isset($post['culture'])) $petroglyph->culture = $post['culture'];
-          //  $petroglyph->description = $post['description'];
+            $data['uuid'] = $this->input->post('uuid');
+            $data['name'] = $this->input->post('name');
+            $data['lat'] = $this->input->post('lat');
+            $data['lng'] = $this->input->post('lng');
 
-            if ($petroglyph->save()) {
-                if ($_FILES) $this->_upload($petroglyph);
-            }
-            else {
+            $result = $this->petroglyph_model->save(null, $data);
+            if ($result) {
+                if ($_FILES) $this->_upload($result);
+            } else {
                 print_r("petroglyph sync: failed!");
             }
-        } else print_r("petroglyph sync: no post data");
-
+        }
+        else print_r("petroglyph sync: no post data");
     }
 
     public function _upload($petroglyph_id)

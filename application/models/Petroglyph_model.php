@@ -22,6 +22,16 @@ class Petroglyph_model extends CI_Model
         return $query->result();
     }
 
+    public function loadByUuid($uuid)
+    {
+        if($uuid) {
+            $query = $this->db->get_where('petroglyphs', array('uuid' => $uuid));
+            return $query->row();
+        }
+        else {
+            return FALSE;
+        }
+    }
     public function load($id)
     {
         //$query = $this->db->get('petroglyphs');
@@ -59,7 +69,7 @@ class Petroglyph_model extends CI_Model
         }
         else
         {
-            $this->db->set('uuid', 'UUID()', FALSE);
+            if (!$data['uuid']) $this->db->set('uuid', 'UUID()', FALSE);
             $result = $this->db->insert('petroglyphs', $data);
             if ($result) return $this->db->insert_id();
         }
