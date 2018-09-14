@@ -69,7 +69,7 @@ class Petroglyph_model extends CI_Model
         }
         else
         {
-            if (!$data['uuid']) $this->db->set('uuid', 'UUID()', FALSE);
+            if (!isset($data['uuid'])) $this->db->set('uuid', 'UUID()', FALSE);
             $result = $this->db->insert('petroglyphs', $data);
             if ($result) return $this->db->insert_id();
         }
