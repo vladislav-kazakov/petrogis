@@ -44,6 +44,9 @@ $lang["create_petroglyph"] = "Create petroglyph";
 $lang["name"] = "Name";
 $lang["save"] = "Save";
 $lang["image"] = "Image";
+$lang["is_public"] = "Published";
+
+$lang["turn"] = "Tern";
 
 $lang[""] = "";
 

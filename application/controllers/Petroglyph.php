@@ -1,6 +1,7 @@
 <?php defined('BASEPATH') or die('No direct access allowed.');
 
-class Petroglyph extends CI_Controller {
+class Petroglyph extends CI_Controller
+{
     public function index()
     {
         $logged_in = $this->user_model->logged_in();
@@ -23,7 +24,7 @@ class Petroglyph extends CI_Controller {
 
         $this->load->view('footer');
     }
-    
+
     public function view($id = NULL)
     {
         $logged_in = $this->user_model->logged_in();
@@ -43,7 +44,7 @@ class Petroglyph extends CI_Controller {
         $petroglyph->culture = explode(",", $petroglyph->culture);
 
         if ($petroglyph->image)
-            $this->load->vars('img_src', base_url() ."petroglyph/image/" . $petroglyph->id);
+            $this->load->vars('img_src', base_url() . "petroglyph/image/" . $petroglyph->id);
 
         $materials = $this->material_model->load_list($petroglyph_id);
         $this->load->vars('materials', $materials);
@@ -57,14 +58,17 @@ class Petroglyph extends CI_Controller {
 
         $this->load->view('footer');
     }
+
     public function image($petroglyph_id)
     {
         return $this->_image($petroglyph_id);
     }
+
     public function imagexl($petroglyph_id)
     {
         return $this->_image($petroglyph_id, 1600);
     }
+
     public function _image($petroglyph_id, $res = 800)
     {
         $this->load->helper('file');
@@ -76,7 +80,7 @@ class Petroglyph extends CI_Controller {
         $petroglyph = $this->petroglyph_model->load($petroglyph_id);
 
         if ($petroglyph->image) {
-            $filePath = "cache/petroglyph/image".$res."/" . $petroglyph->image;
+            $filePath = "cache/petroglyph/image" . $res . "/" . $petroglyph->image;
             if (!file_exists($filePath)) {
                 $img_src = "data/petroglyph/image/" . $petroglyph->image;
 
@@ -86,8 +90,8 @@ class Petroglyph extends CI_Controller {
                 $config['new_image'] = $filePath;
                 $config['create_thumb'] = FALSE;
                 $config['maintain_ratio'] = TRUE;
-                $config['width']         = $res;
-                $config['height']       = $res;
+                $config['width'] = $res;
+                $config['height'] = $res;
 
                 $this->load->library('image_lib', $config);
                 $this->image_lib->resize();
@@ -111,24 +115,27 @@ class Petroglyph extends CI_Controller {
             $data['name'] = $this->input->post('name');
             $data['lat'] = $this->input->post('lat');
             $data['lng'] = $this->input->post('lng');
-            if ($this->input->post('method')) $data['method'] =  implode(",", $this->input->post('method'));
-            if ($this->input->post('culture')) $data['culture'] =  implode(",", $this->input->post('culture'));
+            if ($this->input->post('method')) $data['method'] = implode(",", $this->input->post('method'));
+            if ($this->input->post('culture')) $data['culture'] = implode(",", $this->input->post('culture'));
             if ($this->input->post('epoch')) $data['epoch'] = implode(",", $this->input->post('epoch'));
             $data['description'] = $this->input->post('description');
+            $data['is_public'] = $this->input->post('is_public') ? 1 : 0;
 
             $result = $this->petroglyph_model->save($petroglyph_id, $data);
-            if ($result)
-            {
+            if ($result) {
                 if ($_FILES) $this->_upload($result);
-                redirect($_COOKIE['referrer']? $_COOKIE['referrer'] : 'petroglyph');
-            }
-            else {
+
+                $rotate = $this->input->post('imageRotate');
+                if ($rotate) {
+                    $this->_rotateImage($petroglyph_id, ($rotate + 180) % 360);
+                }
+
+                redirect($_COOKIE['referrer'] ? $_COOKIE['referrer'] : 'petroglyph');
+            } else {
                 $this->load->vars('petroglyph', $data);
                 //$this->load->vars('errors', $post->errors());
             }
-        }
-        else
-        {
+        } else {
             $this->load->view('header', array(
                 'menu' => 'petroglyph',
                 'logged_in' => $this->user_model->logged_in(),
@@ -136,11 +143,11 @@ class Petroglyph extends CI_Controller {
             ));
             if ($petroglyph_id) {
                 $petroglyph = $this->petroglyph_model->load($petroglyph_id);
-                $petroglyph->epoch = explode (",", $petroglyph->epoch);
-                $petroglyph->culture = explode (",", $petroglyph->culture);
-                $petroglyph->method = explode (",", $petroglyph->method);
+                $petroglyph->epoch = explode(",", $petroglyph->epoch);
+                $petroglyph->culture = explode(",", $petroglyph->culture);
+                $petroglyph->method = explode(",", $petroglyph->method);
                 if ($petroglyph->image)
-                    $petroglyph->img_src = base_url() ."petroglyph/image/" . $petroglyph->id;
+                    $petroglyph->img_src = base_url() . "petroglyph/image/" . $petroglyph->id;
                 $this->load->vars('petroglyph', get_object_vars($petroglyph));
             }
             $this->load->view('petroglyph/form', array(
@@ -148,6 +155,21 @@ class Petroglyph extends CI_Controller {
             $this->load->view('footer');
         }
     }
+
+    public function rotateLeft($petroglyph_id)
+    {
+        $this->_rotateImage($petroglyph_id, 90);
+        header("Location: /petroglyph/admin/$petroglyph_id");
+        exit();
+    }
+
+    public function rotateRight($petroglyph_id)
+    {
+        $this->_rotateImage($petroglyph_id, -90);
+        header("Location: /petroglyph/admin/$petroglyph_id");
+        exit();
+    }
+
     public function addfile($petroglyph_id)
     {
         if (!$this->user_model->logged_in()) redirect('welcome');
@@ -169,8 +191,7 @@ class Petroglyph extends CI_Controller {
                 $this->load->vars('petroglyph', $data);
                 $this->load->vars('message', "error" . $this->material_model->error());
             }
-        }
-        else {
+        } else {
             $this->load->view('header', array(
                 'menu' => 'petroglyph',
                 'logged_in' => $this->user_model->logged_in(),
@@ -207,12 +228,12 @@ class Petroglyph extends CI_Controller {
         if (!$this->user_model->admin()) return;
 
         if ($_FILES) {
-          /*  $upload = Validation::factory($_FILES)
-                ->rule('image', 'Upload::valid')
-                ->rule('image', 'Upload::not_empty')
-                ->rule('image', 'Upload::type', array(':value', array('jpg', 'png', 'gif')))
-               ->rule('image', 'Upload::size', array(':value', '20M'));
-*/
+            /*  $upload = Validation::factory($_FILES)
+                  ->rule('image', 'Upload::valid')
+                  ->rule('image', 'Upload::not_empty')
+                  ->rule('image', 'Upload::type', array(':value', array('jpg', 'png', 'gif')))
+                 ->rule('image', 'Upload::size', array(':value', '20M'));
+  */
             if ($_FILES['image']['name']) {
                 $this->load->model('petroglyph_model');
                 $petroglyph = $this->petroglyph_model->load($petroglyph_id);
@@ -241,6 +262,7 @@ class Petroglyph extends CI_Controller {
             }
         }
     }
+
     public function _uploadMaterial($material_id)
     {
         // Check if it is already loguserged in!
@@ -279,6 +301,51 @@ class Petroglyph extends CI_Controller {
                 $this->material_model->save($material_id, array("file" => $fsname));
             } else {
                 //todo: handle file upload error
+            }
+        }
+    }
+
+    public function _rotateImage($petroglyph_id, $degrees)
+    {
+        $this->load->helper('file');
+
+        $logged_in = $this->user_model->logged_in();
+        if (!$logged_in) redirect('welcome');
+
+        $this->load->model('petroglyph_model');
+        $petroglyph = $this->petroglyph_model->load($petroglyph_id);
+
+        if ($petroglyph->image) {
+            $dir = FCPATH . 'data' . DIRECTORY_SEPARATOR . 'petroglyph' . DIRECTORY_SEPARATOR . 'image' . DIRECTORY_SEPARATOR;
+
+            $img_src = $dir . $petroglyph->image;
+
+            $fstype = '';
+            if (preg_match("/\.[^\.]+$/i", $petroglyph->image, $matches)) $fstype = $matches[0];
+
+            $fsname = uniqid() . $fstype;
+            $img_src_new = $dir . $fsname;
+
+            if (file_exists($img_src)) {
+                $type = get_mime_by_extension($img_src);
+                $type_ = explode('/', $type);
+                $functionName1 = 'imagecreatefrom' . $type_[1];
+                $functionName2 = 'image' . $type_[1];
+
+                if (function_exists($functionName1) and function_exists($functionName2)) {
+                    $source = $functionName1($img_src);
+                    $rotate = imagerotate($source, $degrees, 0);
+
+                    if ($functionName2($rotate, $img_src_new)) {
+
+                        $this->petroglyph_model->save($petroglyph_id, array("image" => $fsname));
+
+                        imagedestroy($source);
+                        imagedestroy($rotate);
+                        unlink($img_src);
+                        // TODO: unlink cache images (800, 1600...)
+                    }
+                }
             }
         }
     }
