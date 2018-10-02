@@ -47,6 +47,7 @@ $lang["image"] = "Image";
 $lang["is_public"] = "Published";
 
 $lang["turn"] = "Tern";
+$lang["to main"] = "Make the main";
 
 $lang[""] = "";
 

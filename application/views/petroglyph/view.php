@@ -85,6 +85,7 @@
                            href="<?=base_url() .lang("lang") . "material/imagexl/" . $material->id?>"><img
                                 class="img-responsive  img-material" src="<?=base_url() .lang("lang") . "material/image/" . $material->id?>"></a><br>
                         <?if ($admin):?>
+                            <a class="btn btn-default btn-xs overlay-bl" href="<?=base_url() .lang("lang") .  "material/tomain/" . $material->id?>"><?=lang("to main");?></a>
                             <a class="btn btn-default btn-xs overlay-br" href="<?=base_url() .lang("lang") .  "material/delete/" . $material->id?>"><?=lang("delete");?></a>
                         <?endif?>
                 </div>

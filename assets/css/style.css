@@ -49,6 +49,12 @@ body {
     bottom: 0;
     right: 0;
 }
+.overlay-bl
+{
+    position:absolute;
+    bottom: 0;
+    left: 0;
+}
 /* Custom page CSS
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
