@@ -7,7 +7,7 @@
 <form enctype="multipart/form-data" method="post">
     <div class="col-md-6 form-group">
         <div class="form-group">
-            <input type="checkbox" name="is_public" <?= $petroglyph['is_public'] ? 'checked' : null ?> id="is_public">
+            <input type="checkbox" name="is_public" <?= isset($petroglyph['is_public']) ? 'checked' : null ?> id="is_public">
             <?= lang("is_public", 'is_public'); ?>
         </div>
 

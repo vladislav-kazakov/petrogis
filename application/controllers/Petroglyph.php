@@ -156,20 +156,6 @@ class Petroglyph extends CI_Controller
         }
     }
 
-    public function rotateLeft($petroglyph_id)
-    {
-        $this->_rotateImage($petroglyph_id, 90);
-        header("Location: /petroglyph/admin/$petroglyph_id");
-        exit();
-    }
-
-    public function rotateRight($petroglyph_id)
-    {
-        $this->_rotateImage($petroglyph_id, -90);
-        header("Location: /petroglyph/admin/$petroglyph_id");
-        exit();
-    }
-
     public function addfile($petroglyph_id)
     {
         if (!$this->user_model->logged_in()) redirect('welcome');
@@ -343,10 +329,24 @@ class Petroglyph extends CI_Controller
                         imagedestroy($source);
                         imagedestroy($rotate);
                         unlink($img_src);
-                        // TODO: unlink cache images (800, 1600...)
+
+                        $this->_clearcache($petroglyph->image);
                     }
                 }
             }
+        }
+    }
+
+    public function _clearcache($filename, $spec_path = false)
+    {
+
+        if (empty($filename)) return false;
+
+        $res_arr = array(800, 1600);
+
+        foreach ($res_arr as $res) {
+            $filePath = $spec_path ? $spec_path . $res . "/" . $filename : "cache/petroglyph/image" . $res . "/" . $filename;
+            if (file_exists($filePath)) unlink($filePath);
         }
     }
 }
