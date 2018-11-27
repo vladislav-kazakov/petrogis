@@ -9,6 +9,8 @@ application/logs/*
 !application/logs/.htaccess
 
 application/config/database.php
+application/config/config.php
+
 # /data/*
 # /cache/*
 
@@ -34,4 +36,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /.idea/
 
 
-application/config/config.php
+
