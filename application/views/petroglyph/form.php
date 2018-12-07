@@ -1,9 +1,9 @@
 <div class="col-md-12">
-    <h1><? if (isset($petroglyph['id'])): ?><?= lang("edit_petroglyph"); ?><? else: ?><?= lang("create_petroglyph"); ?><? endif ?> </h1>
+    <h1><?php  if (isset($petroglyph['id'])): ?><?= lang("edit_petroglyph"); ?><?php  else: ?><?= lang("create_petroglyph"); ?><?php  endif ?> </h1>
 </div>
-<? if (isset($message)): ?>
+<?php  if (isset($message)): ?>
     <div class="alert alert-danger" role="alert"><?= $message ?></div>
-<? endif ?>
+<?php  endif ?>
 <form enctype="multipart/form-data" method="post">
     <div class="col-md-6 form-group">
         <div class="form-group">
@@ -14,28 +14,28 @@
         <div class="form-group">
             <label><?= lang("name"); ?></label>
             <input type="text" name="name" class="form-control"
-                   value="<? if (isset($petroglyph['name'])) echo $petroglyph['name'] ?>">
+                   value="<?php  if (isset($petroglyph['name'])) echo $petroglyph['name'] ?>">
         </div>
 
         <label><?= lang("image"); ?></label>
-        <? if (isset($petroglyph['img_src'])): ?>
+        <?php  if (isset($petroglyph['img_src'])): ?>
             <div class="control-rotate bottom-20">
-<!--                <a class="btn btn-default" href="/petroglyph/rotateLeft/--><?//= $petroglyph['id']?><!--">↺</a>-->
-<!--                <a class="btn btn-default" href="/petroglyph/rotateRight/--><?//= $petroglyph['id']?><!--">↻</a>-->
+<!--                <a class="btn btn-default" href="/petroglyph/rotateLeft/--><?php //= $petroglyph['id']?><!--">↺</a>-->
+<!--                <a class="btn btn-default" href="/petroglyph/rotateRight/--><?php //= $petroglyph['id']?><!--">↻</a>-->
                 <input type="hidden" name="imageRotate" value="0">
                 <button type="button" onclick="rotate(90)" class="btn btn-default"><?= lang("turn"); ?> ↻</button>
             </div>
             <div id="boxImage">
                 <img id="imageContainer" class="img-responsive img-thumbnail" src="<?= $petroglyph['img_src'] ?>">
             </div>
-        <? else: ?>
+        <?php  else: ?>
             <img id="imageContainer" class="img-responsive img-thumbnail bottom-20 invisible">
-        <? endif ?>
+        <?php  endif ?>
         <input type="file" name="image" id="imageInput" class="form-control bottom-20">
 
         <label><?= lang("description"); ?></label>
         <textarea name="description" rows="10"
-                  class="form-control"><? if (isset($petroglyph['description'])) echo $petroglyph['description'] ?></textarea>
+                  class="form-control"><?php  if (isset($petroglyph['description'])) echo $petroglyph['description'] ?></textarea>
     </div>
     <div class="col-md-6 form-group">
         <div class="col-md-6 form-group">
@@ -78,10 +78,10 @@
         <div class="col-md-6 form-group">
             <label><?= lang("latitude"); ?></label>
             <input type="text" name="lat" class="form-control"
-                   value="<? if (isset($petroglyph['lat'])) echo $petroglyph['lat'] ?>">
+                   value="<?php  if (isset($petroglyph['lat'])) echo $petroglyph['lat'] ?>">
             <label><?= lang("longitude"); ?></label>
             <input type="text" name="lng" class="form-control"
-                   value="<? if (isset($petroglyph['lng'])) echo $petroglyph['lng'] ?>">
+                   value="<?php  if (isset($petroglyph['lng'])) echo $petroglyph['lng'] ?>">
         </div>
         <div class="col-md-6 form-group">
             <label><?= lang("culture"); ?></label>

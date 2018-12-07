@@ -16,13 +16,13 @@
 </script>
 
 <script type="text/javascript" src="/assets/js/jquery.cookie.js"></script>
-<?if ($map_provider == 'google'):?>
+<?php if ($map_provider == 'google'):?>
     <script type="text/javascript" src="/assets/js/markerclusterer/src/markerclusterer.js"></script>
     <script type="text/javascript" src = "/assets/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeYhPhJAnwj95GXDg5BRT7Q2dTj303dQU&callback=initMap&language=<?=lang("lang")==""?"ru":"en"?>"
             type="text/javascript"></script>
-<?else:?>
+<?php else:?>
     <script src="https://api-maps.yandex.ru/2.1/?lang=<?=lang("lang")==""?"ru_RU":"en_US"?>&mode=debug" type="text/javascript"></script>
     <script src="/assets/js/tiler-converter.js" type="text/javascript"></script>
     <script type="text/javascript" src = "/assets/js/map_yandex.js"></script>
-<?endif?>
+<?php endif?>

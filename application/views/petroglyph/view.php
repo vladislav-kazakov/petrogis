@@ -1,19 +1,19 @@
 <script>
     document.cookie = "referrer=" + document.URL + ";path=/";
 </script>
-<?if (isset($message)) echo $message;?>
+<?php if (isset($message)) echo $message;?>
 <div class="col-md-12">
     <h1><?=$petroglyph->name?></h1>
 </div>
 <div class="col-md-6 bottom-20">
-    <?if (isset($img_src)):?>
+    <?php if (isset($img_src)):?>
         <a data-fancybox="gallery" href="imagexl/<?=$petroglyph->id?>"><img
                 class="img-responsive img-thumbnail" src="image/<?=$petroglyph->id?>"></a>
-    <?endif?>
-    <?if ($petroglyph->description):?>
+    <?php endif?>
+    <?php if ($petroglyph->description):?>
         <h3><?=lang("description");?></h3>
         <?=$petroglyph->description?>
-    <?endif?>
+    <?php endif?>
 </div>
 <div class="col-md-6">
     <div class="col-md-6">
@@ -72,10 +72,10 @@
         </div>
     </div>
 </div>
-<?if ($materials):?>
+<?php if ($materials):?>
     <div class="col-md-12">
         <h3><?=lang("additional_materials");?></h3>
-        <?foreach ($materials as $material):?>
+        <?php foreach ($materials as $material):?>
             <div class="col-md-2 bottom-20">
                 <div class="thumbnail">
                 <div class="wrapper">
@@ -84,23 +84,23 @@
                            data-description="<?=$material->description?>"
                            href="<?=base_url() .lang("lang") . "material/imagexl/" . $material->id?>"><img
                                 class="img-responsive  img-material" src="<?=base_url() .lang("lang") . "material/image/" . $material->id?>"></a><br>
-                        <?if ($admin):?>
+                        <?php if ($admin):?>
                             <a class="btn btn-default btn-xs overlay-bl" href="<?=base_url() .lang("lang") .  "material/tomain/" . $material->id?>"><?=lang("to main");?></a>
                             <a class="btn btn-default btn-xs overlay-br" href="<?=base_url() .lang("lang") .  "material/delete/" . $material->id?>"><?=lang("delete");?></a>
-                        <?endif?>
+                        <?php endif?>
                 </div>
             </div>
                 </div>
-        <?endforeach?>
+        <?php endforeach?>
     </div>
-<?endif?>
-<?if ($admin):?>
+<?php endif?>
+<?php if ($admin):?>
 <div class="col-md-12 bottom-20">
     <a class="btn btn-default" href="admin/<?=$petroglyph->id?>"><?=lang("edit");?></a>
     <a class="btn btn-default" href="delete/<?=$petroglyph->id?>"><?=lang("delete");?></a>
     <a class="btn btn-default"href="addfile/<?=$petroglyph->id?>"><?=lang("add_file");?></a>
 </div>
-<?endif?>
+<?php endif?>
 <script>
     $('[data-fancybox]').fancybox({
         protect: true,

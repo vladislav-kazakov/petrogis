@@ -35,10 +35,10 @@
         </div>
         <div id="navbar">
             <ul class="nav navbar-nav">
-                <li class="<?if ($menu=='map'):?>active<?endif?>"><a href="<?=base_url().lang("lang")?>map"><?=lang("menu_map");?></a></li>
-                <li class="<?if ($menu=='petroglyph'):?>active<?endif?>"><a href="<?=base_url().lang("lang");?>petroglyph"><?=lang("menu_petroglyphs");?></a></li>
-                <!--li class="<?if ($menu=='contact'):?>active<?endif?>"><a href="#contact">Contact</a></li>
-                <li class="<?if ($menu=='signup'):?>active<?endif?>"><a href="#signup">Sign up</a></li-->
+                <li class="<?php if ($menu=='map'):?>active<?php endif?>"><a href="<?=base_url().lang("lang")?>map"><?=lang("menu_map");?></a></li>
+                <li class="<?php if ($menu=='petroglyph'):?>active<?php endif?>"><a href="<?=base_url().lang("lang");?>petroglyph"><?=lang("menu_petroglyphs");?></a></li>
+                <!--li class="<?php if ($menu=='contact'):?>active<?php endif?>"><a href="#contact">Contact</a></li>
+                <li class="<?php if ($menu=='signup'):?>active<?php endif?>"><a href="#signup">Sign up</a></li-->
             </ul>
 
             <div class="navbar-right">
@@ -47,14 +47,14 @@
                     <a class="navbar-link" href="/en<?=$this->config->config['canonical_route']?>">en</a>
                 </p>
 
-                <?if ($logged_in):?>
+                <?php if ($logged_in):?>
                     <p class="navbar-text">
                         <?=lang("hello");?>, <?=$username?>!
                     </p>
                     <form class="navbar-form navbar-right" action="<?=base_url().lang("lang")?>logout" method="post">
                         <button type="submit" class="btn btn-success"><?=lang("logout");?></button>
                     </form>
-                <?else:?>
+                <?php else:?>
                 <form class="navbar-form navbar-right" action="<?=base_url().lang("lang")?>login" method="post">
                     <div class="form-group">
                         <input type="text" name="email" placeholder="Email" class="form-control">
@@ -64,7 +64,7 @@
                     </div>
                     <button type="submit" class="btn btn-success"><?=lang("login");?></button>
                 </form>
-                <?endif?>
+                <?php endif?>
             </div>
         </div><!--/.nav-collapse -->
     </div>
