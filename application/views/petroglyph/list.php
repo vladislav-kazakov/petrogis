@@ -3,8 +3,9 @@
 </script>
 <?php if (isset($message)) echo $message;?>
 <h1><?=lang("list_of_petroglyphs")?></h1>
+<?php $i=1;?>
 <?php foreach ($petroglyphs as $petroglyph):?>
-    #<?=$petroglyph->id?>. <a href="petroglyph/<?=$petroglyph->id?>"><?=$petroglyph->name?></a>
+    #<?=$i++?>. <a href="petroglyph/<?=$petroglyph->id?>"><?=$petroglyph->name?></a>
     <?php if ($admin):?>
         (<a href="petroglyph/admin/<?=$petroglyph->id?>"><?=lang("edit");?></a>)
         (<a href="petroglyph/delete/<?=$petroglyph->id?>"><?=lang("delete");?></a>)

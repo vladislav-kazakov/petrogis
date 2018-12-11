@@ -11,7 +11,7 @@ class Material_model extends CI_Model
         $this->load->database();
     }
 
-    public function load_list($petroglyph_id)
+    public function load_list($petroglyph_id = null)
     {
         if (isset($petroglyph_id))
             $this->db->where('petroglyph_id', $petroglyph_id);
@@ -19,7 +19,7 @@ class Material_model extends CI_Model
         return $query->result();
     }
 
-    public function load($id)
+    public function load($id = null)
     {
         //$query = $this->db->get('petroglyphs');
         //return $query->result();

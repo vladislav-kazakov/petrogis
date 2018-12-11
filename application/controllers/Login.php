@@ -12,10 +12,10 @@ class Login extends CI_Controller {
             if ($_SERVER['HTTP_REFERER'])
                 redirect($_SERVER['HTTP_REFERER']);
             else
-                redirect("welcome");
+                redirect("/");
             exit;
         } else {
-            echo 'Login failed, send back to form with error message';
+            redirect("/");
             // Login failed, send back to form with error message
         }
     }

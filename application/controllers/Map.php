@@ -20,6 +20,7 @@ class Map extends CI_Controller {
         else $petroglyphs = $this->petroglyph_model->load_list();
         $json_petroglyphs = array();
         foreach($petroglyphs as $petroglyph) {
+            if ($petroglyph->lat == 0 || $petroglyph->lng == 0) continue;
             $image = $petroglyph->image != null ? base_url() ."petroglyph/image/" . $petroglyph->id : null;
             array_push($json_petroglyphs, array('id' => $petroglyph->id ,
                                                 'name' => $petroglyph->name,
