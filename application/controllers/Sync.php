@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 class Sync extends CI_Controller {
     public function uuids()
     {
+        show_error("functionality closed", 404); exit;
         $this->load->database();
         $this->db->select('uuid');
         $query = $this->db->get('petroglyphs');
@@ -19,6 +20,7 @@ class Sync extends CI_Controller {
     }
     public function download($petroglyph_uuid)
     {
+        show_error("functionality closed", 404); exit;
         $this->load->database();
         //$this->db->select('uuid');
         $query = $this->db->get_where('petroglyphs', array('uuid' => $petroglyph_uuid));
@@ -42,6 +44,7 @@ class Sync extends CI_Controller {
     }
     public function downloadimage($petroglyph_id)
     {
+        show_error("functionality closed", 404); exit;
         $this->load->helper('file');
         $res = 800;
         $this->load->model('petroglyph_model');
@@ -74,6 +77,7 @@ class Sync extends CI_Controller {
     }
     public function upload()
     {
+        show_error("functionality closed", 404); exit;
 //        $petroglyph_id = $this->request->param('id');
         //$post = $this->input->post;
         if ($this->input->post('uuid')) {
@@ -100,6 +104,7 @@ class Sync extends CI_Controller {
 
     public function _upload($petroglyph_id)
     {
+        show_error("functionality closed", 404); exit;
         if ($_FILES) {
             if ($_FILES['image']['name']) {
                 $this->load->model('petroglyph_model');
@@ -131,6 +136,7 @@ class Sync extends CI_Controller {
     }
     public function _uploadFromFile($petroglyph_id, $filePath, $fileName)
     {
+        show_error("functionality closed", 404); exit;
         $this->load->model('petroglyph_model');
         $petroglyph = $this->petroglyph_model->load($petroglyph_id);
 
@@ -149,6 +155,7 @@ class Sync extends CI_Controller {
 
     public function _addMaterialFromFile($petroglyph_id, $filePath, $fileName)
     {
+        show_error("functionality closed", 404); exit;
         $data = array();
         $data['name'] = $fileName;
         $data['type'] = 'image';
@@ -160,6 +167,7 @@ class Sync extends CI_Controller {
     }
     public function _uploadMaterialFromFile($material_id, $filePath, $fileName)
     {
+        show_error("functionality closed", 404); exit;
         $this->load->model('material_model');
         $material = $this->material_model->load($material_id);
 
@@ -184,32 +192,58 @@ class Sync extends CI_Controller {
         //$content = preg_replace("/\"/", "", $content);
         //$content = preg_replace("/###/", "\"", $content);
         //$content = preg_replace("/;;*/", ";", $content);
-        $arr = explode("\r\n", $content);
+        $arr = explode(";\r\n", $content);
+        print_r($arr);//exit;
         foreach($arr as $item){
             $fields = explode(";", $item);
             if (!isset($fields[0]) || $fields[0] == '') continue;
-            if (!isset($fields[3]) || $fields[3] == '') continue;
+            if (!isset($fields[3]) || $fields[3] == '') $fields[3] = "Without title";
             $data['name'] = str_replace('###', ";", $fields[3]);
-            $data['lat'] = $fields[4];
-            echo ($fields[0]) . PHP_EOL;
-            $data['lng'] = $fields[5];
-            $data['description'] = "Систематизированные фотографии \"Чаганка 2017\"<br>\r\n"
-                                 . "Порядковый номер в реестре: " . $fields[0] . "<br>\r\n"
-                                 . "Вид памятника: " . $fields[2] . "<br>\r\n"
-                                 . "Описание памятника: " . str_replace('###', ";", $fields[3]) . "<br>\r\n"
-                                 . "Высота: " . $fields[6] . "<br>\r\n"
-                                 . "Датировка: " . $fields[7] . "<br>\r\n";
+            $data['lat'] = str_replace(",", ".", $fields[4]);
+            $data['lng'] = str_replace(",", ".", $fields[5]);
+            $data['description'] = "Dataset: Turu-Alty 2014-2015<br>\r\n"
+                . "Id: " . $fields[0] . "<br>\r\n"
+                . "Type: " . $fields[2] . "<br>\r\n"
+                . "Short description: " . str_replace('###', ";", $fields[3]) . "<br>\r\n"
+                . "Long Description: " . str_replace('###', ";", $fields[7]) . "<br>\r\n"
+                . "Russian Description: " . str_replace('###', ";", $fields[8]) . "<br>\r\n"
+                . "Altitude: " . $fields[6] . "<br>\r\n"
+                //. "Dating: " . $fields[13] . " " . $fields[12] . "<br>\r\n"
+                . "Topography: " . $fields[9] . " " . $fields[10] . " " . $fields[11] . "<br>\r\n"
+            ;
+            switch(trim($fields[14])) {
+                case "Scythian": $data['culture'] = 'scythian'; break;
+                case "Turk": $data['culture'] = 'turk'; break;
+                default: echo "error: '" . trim($fields[14]) . "'";
+            }
+            switch (trim($fields[13]). " " . trim($fields[12]))
+            {
+                case "Early Iron Age": $data['epoch'] = "early_iron"; break;
+                case "Late Iron Age": $data['epoch'] = "late_iron"; break;
+                case "Middle Iron Age": $data['epoch'] = "middle_iron"; break;
+                case " Iron Age": $data['epoch'] = "iron"; break;
+                case "Early Bronze Age": $data['epoch'] = "early_bronze"; break;
+                case "Late Bronze Age": $data['epoch'] = "late_bronze"; break;
+                case "Middle Bronze Age": $data['epoch'] = "middle_bronze"; break;
+                case " Bronze Age": $data['epoch'] = "bronze"; break;
+                case " Medieval": $data['epoch'] = "middle"; break;
+                case " Ethnographic": $data['epoch'] = "ethnographic"; break;
+                default: echo "error: '" . trim($fields[13]). " " . trim($fields[12]) . "'";
+            }
             $result = $this->petroglyph_model->save(null, $data);
             if ($result) {
                 //searching for files
-                $folder1 = "/var/www/html/petrogis/temp/РАЕ/п." . $fields[1];
-                $folder2 = "/var/www/html/petrogis/temp/Чаган - систематизированные фото/п." . $fields[0];
+                $folder1 = "";// "S:\\altai\\AMSP\\Expeditions\\Expeditions-photo database\\Archaeology\\2015 Turu Alty\\2015 Archaeology";
+                $folder2 = "";// "S:\\altai\\AMSP\\Expeditions\\Expeditions-photo database\\Archaeology\\2014 Turu Alty\\2014 Archaeology";
+                $folder3 = "S:\\altai\\AMSP\\Expeditions\\Expeditions-photo database\\Archaeology\\2014 Turu Alty\\2014 Petroglyphs - Gertjan Plets";
+                //$folder2 = "";//"/var/www/html/petrogis/temp/Чаган - систематизированные фото/п." . $fields[0];
                 $filenames = [];
                 $filepathes = [];
                 if (is_dir($folder1)) {
                     $filenames1 = scandir($folder1);
                     foreach ($filenames1 as $filename)
-                        if (strpos($filename, ".JPG")) {
+
+                        if (strpos($filename, $fields[1])!==false && strpos($filename, ".JPG")) {
                             $filenames[] = $filename;
                             $filepathes[] = $folder1 . "/" . $filename;
                         }
@@ -217,12 +251,23 @@ class Sync extends CI_Controller {
                 if (is_dir($folder2)) {
                     $filenames2 = scandir($folder2);
                     foreach ($filenames2 as $filename)
-                        if (strpos($filename, ".JPG")) {
+                        if (strpos($filename, $fields[1])!==false && strpos($filename, ".JPG")) {
                             $filenames[] = $filename;
                             $filepathes[] = $folder2 . "/" . $filename;
                         }
                 }
-                print_r($filenames);
+                if (is_dir($folder3)) {
+                    $filenames3 = scandir($folder3);
+                    foreach ($filenames3 as $filename)
+                        if (strpos($filename, $fields[1])!==false &&
+                            (strpos($filename, ".JPG") ||
+                                strpos($filename, ".jpg") ||
+                                strpos($filename, ".jpeg") )
+                        ) {
+                            $filenames[] = $filename;
+                            $filepathes[] = $folder3 . "/" . $filename;
+                        }
+                }              print_r($filenames);
                 if (isset($filenames[0]))
                     $this->_uploadFromFile($result, $filepathes[0], $filenames[0]);
                 if (isset($filenames[1]))
@@ -231,6 +276,49 @@ class Sync extends CI_Controller {
                     }
                 echo ("...Finished") . PHP_EOL;
             }
+        }
+    }
+    public function export_csv2()
+    {
+        show_error("functionality closed", 404); exit;
+        set_time_limit(0);
+        $content = mb_convert_encoding(file_get_contents(base_url() ."temp/reestr.csv"), 'UTF-8', 'CP1251');
+        //$content = preg_replace("/\"\"/", "###", $content);
+        //$content = preg_replace("/\"/", "", $content);
+        //$content = preg_replace("/###/", "\"", $content);
+        //$content = preg_replace("/;;*/", ";", $content);
+        $arr = explode(";\r\n", $content);
+        //print_r($arr);//exit;
+        foreach($arr as $item){
+            $data = [];
+            $fields = explode(";", $item);
+            $query = $this->db->query("select id from petroglyphs where description like '%Id: " . $fields[0] . "<br>\r\n%'");
+            $row = $query->row_array();
+            $id = $row['id'];
+
+            //$data['lat'] = str_replace(",", ".", $fields[4]);
+            //$data['lng'] = str_replace(",", ".", $fields[5]);
+            $petroglyph = $this->petroglyph_model->load($id);
+            switch (trim($fields[13]). " " . trim($fields[12]))
+            {
+                case "Early Iron Age": $petroglyph->epoch = "early_iron"; break;
+                case "Late Iron Age": $petroglyph->epoch = "late_iron"; break;
+                case "Middle Iron Age": $petroglyph->epoch = "middle_iron"; break;
+                case " Iron Age": $petroglyph->epoch = "iron"; break;
+                case "Early Bronze Age": $petroglyph->epoch = "early_bronze"; break;
+                case "Late Bronze Age": $petroglyph->epoch = "late_bronze"; break;
+                case "Middle Bronze Age": $petroglyph->epoch = "middle_bronze"; break;
+                case " Bronze Age": $petroglyph->epoch = "bronze"; break;
+                case " Medieval": $petroglyph->epoch = "middle"; break;
+                case " Ethnographic": $petroglyph->epoch = "ethnographic"; break;
+                default: $petroglyph->epoch = null;
+            }
+            //$petroglyph->lat = str_replace(",", ".", $fields[4]);
+            //$petroglyph->lng = str_replace(",", ".", $fields[5]);
+
+            print_r($petroglyph);
+            $this->db->update('petroglyphs', $petroglyph, array('id' => $id));
+            //$result = $this->petroglyph_model->save($id);
         }
     }
     public function cache_petroglyphs(){

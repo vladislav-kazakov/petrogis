@@ -9,10 +9,8 @@ application/logs/*
 !application/logs/.htaccess
 
 application/config/database.php
-application/config/config.php
-
-# /data/*
-# /cache/*
+/data/*
+/cache/*
 
 composer.lock
 
@@ -34,6 +32,3 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.sublime-workspace
 *.sublime-project
 /.idea/
-
-
-

@@ -25,7 +25,7 @@ function init(){
     }); */
 
      var options = {
-            tileUrlTemplate: "/assets/tiles/%z/tile-%x-%y.png",
+            tileUrlTemplate: "/assets/corona_tiles/%z/%x/%y.png",
             controls: {
                 typeControl: true,
                 miniMap: false,

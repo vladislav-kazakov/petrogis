@@ -17,13 +17,16 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map_canvas'), {
         center: map_center,
         zoom: zoom,
+        gestureHandling: 'greedy',
         mapTypeId: type_id
 
     });
 
         imageMapType = new google.maps.ImageMapType(
             {getTileUrl: function(coord, zoom) {
-                return '/assets/google_tiles/' + zoom + '/' + coord.x + '/' + coord.y + '.png';
+                    var ymax = 1 << zoom;
+                    var y = ymax - coord.y -1;
+                return '/assets/pleiades_tiles/' + zoom + '/' + coord.x + '/' + coord.y + '.png';
 
                 //return '/assets/tiles/' + zoom + '/tile-' + coord.x + '-' + coord.y + '.png';
                 //return "http://sat04"/*+((coord.x+coord.y)%5)*/+".maps.yandex.net/tiles?l=sat&v=2.16.0&x=" +
@@ -199,18 +202,20 @@ for (var i =0; i<arr.length; i++)
     });
     markers.push(marker);
     var infowindow = new google.maps.InfoWindow();
+    infowindow.setOptions({disableAutoPan : true});
+
     //открывает infowindows при наведении курсора мыши
     marker.addListener('mouseover', (function(marker, infowindow, info) {
         return function() {
-            var img_str = info["image"] != null ? '<div class="div-infowindow"><img class="img-infowindow" src="' + info["image"] + '"></div>':""
-            infowindow.setContent('<p>' + info["name"]+'</p>' + img_str);
+            var img_str = info["image"] != null ? '<img class="img-infowindow" src="' + info["image"] + '">':""
+            infowindow.setContent('<div class="div-infowindow"><div class="cap-infowindow">' + info["name"] + '</div>' + img_str + "</div>");
             infowindow.open(map, marker);
         }
     })(marker, infowindow, arr[i]));
     marker.addListener('mousedown', (function(marker, infowindow, info) {
         return function() {
-            var img_str = info["image"] != null ? '<div class="div-infowindow"><img class="img-infowindow" src="' + info["image"] + '"></div>':""
-            infowindow.setContent('<p>' + info["name"]+'</p>' + img_str);
+            var img_str = info["image"] != null ? '<img class="img-infowindow" src="' + info["image"] + '">':""
+            infowindow.setContent('<div class="div-infowindow"><div class="cap-infowindow">' + info["name"] + '</div>' + img_str + "</div>");
             infowindow.open(map, marker);
         }
     })(marker, infowindow, arr[i]));
@@ -229,7 +234,7 @@ for (var i =0; i<arr.length; i++)
 var markerClusterer = new MarkerClusterer(map, markers,
     {
         imagePath: '/assets/js/markerclusterer/images/m',
-        maxZoom: 17,
+        maxZoom: 16,
         gridSize: 20,
         styles: null
     });

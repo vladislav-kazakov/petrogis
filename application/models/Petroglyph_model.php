@@ -10,7 +10,6 @@ class Petroglyph_model extends CI_Model
     public function load_list()
     {
         $this->db->where('deleted', FALSE);
-        if (!$this->user_model->admin()) $this->db->where('is_public', TRUE);
         $query = $this->db->get('petroglyphs');
         return $query->result();
     }

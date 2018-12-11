@@ -6,7 +6,9 @@ html {
 }
 body {
     /* Margin bottom by footer height */
-    margin-bottom: 60px!important;
+    margin:0;
+    margin-bottom: 70px!important;
+    /*min-height: 100%;*/
 }
 .footer {
     position: absolute;
@@ -16,10 +18,12 @@ body {
     height: 60px;
     background-color: #f5f5f5;
 }
-.div-infowindow {
-    width: 180px;
-    height: 125px;
+.cap-infowindow {
+    max-width: 270px;
+    max-height: 90px;
+    overflow: hidden;
 }
+
 .img-infowindow {
     max-width: 170px;
     max-height: 120px;
@@ -49,18 +53,15 @@ body {
     bottom: 0;
     right: 0;
 }
-.overlay-bl
-{
-    position:absolute;
-    bottom: 0;
-    left: 0;
-}
 /* Custom page CSS
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
 
 body > .container {
-    padding: 50px 15px 0;
+    padding: 0px 15px 0;
+}
+.pageheader .navbar {
+    margin-bottom: 0px!important;
 }
 .container .text-muted {
     margin: 10px 0;
@@ -86,3 +87,14 @@ img.petroglyph_view{
     width:100%;
 }
 */
+h1{
+    font-size: 30px;
+}
+
+@media(min-width: 1024px) {
+    h1{
+        font-size: 40px;
+    }
+}
+
+
