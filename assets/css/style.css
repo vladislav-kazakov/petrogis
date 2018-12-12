@@ -86,3 +86,26 @@ img.petroglyph_view{
     width:100%;
 }
 */
+
+@media (max-width: 768px) {
+    html, body {
+        min-width: 320px;
+    }
+
+    .container {
+        min-width: 320px;
+    }
+}
+
+
+@media (min-width: 769px) and (max-width: 991px) {
+}
+
+@media (min-width: 992px) and (max-width: 1999px) {
+}
+
+@media (min-width: 1200px) {
+    .container {
+        width: 1330px;
+    }
+}
