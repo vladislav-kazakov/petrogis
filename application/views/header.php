@@ -45,13 +45,9 @@
         </div>
         <div id="navbar">
             <ul class="nav navbar-nav">
-                <li class="<?if ($menu=='map'):?>active<?endif?>"><a href="<?=base_url().lang("lang")?>map"><?=lang("menu_map");?></a></li>
-                <li class="<?if ($menu=='petroglyph'):?>active<?endif?>"><a href="<?=base_url().lang("lang");?>petroglyph"><?=lang("menu_petroglyphs");?></a></li>
-                <li class="<?if ($menu=='e_double'):?>active<?endif?>"><a href="<?=base_url().lang("lang");?>petroglyph/edouble"><?=lang("menu_e_double");?></a></li>
-                <!--li class="<?if ($menu=='contact'):?>active<?endif?>"><a href="#contact">Contact</a></li>
-                <li class="<?if ($menu=='signup'):?>active<?endif?>"><a href="#signup">Sign up</a></li-->
                 <li class="<?php if ($menu=='map'):?>active<?php endif?>"><a href="<?=base_url().lang("lang")?>map"><?=lang("menu_map");?></a></li>
                 <li class="<?php if ($menu=='petroglyph'):?>active<?php endif?>"><a href="<?=base_url().lang("lang");?>petroglyph"><?=lang("menu_petroglyphs");?></a></li>
+                <li class="<?php if ($menu=='e_double'):?>active<?endif?>"><a href="<?=base_url().lang("lang");?>petroglyph/edouble"><?=lang("menu_e_double");?></a></li>
                 <!--li class="<?php if ($menu=='contact'):?>active<?php endif?>"><a href="#contact">Contact</a></li>
                 <li class="<?php if ($menu=='signup'):?>active<?php endif?>"><a href="#signup">Sign up</a></li-->
             </ul>
