@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title><?=lang("gis_petroglyphs");?></title>
-    <!-- Custom styles for this template -->
-    <link href="<?=base_url()?>assets/css/style.css" rel="stylesheet">
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 
@@ -17,6 +15,9 @@
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
+    <!-- Custom styles for this template -->
+    <link href="<?=base_url()?>assets/css/style.css" rel="stylesheet">
+
     <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script-->
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -25,6 +26,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.25/jquery.fancybox.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.1.25/jquery.fancybox.min.js"></script>
 
+    <?php
+    if (!empty($page)) {
+        switch ($page) {
+            case 'e_double':
+                echo '<link rel="stylesheet" href="' . base_url() .'assets/css/edouble.css" />';
+                break;
+        }
+    }
+    ?>
 
 </head>
 <body>
@@ -37,6 +47,7 @@
             <ul class="nav navbar-nav">
                 <li class="<?if ($menu=='map'):?>active<?endif?>"><a href="<?=base_url().lang("lang")?>map"><?=lang("menu_map");?></a></li>
                 <li class="<?if ($menu=='petroglyph'):?>active<?endif?>"><a href="<?=base_url().lang("lang");?>petroglyph"><?=lang("menu_petroglyphs");?></a></li>
+                <li class="<?if ($menu=='e_double'):?>active<?endif?>"><a href="<?=base_url().lang("lang");?>petroglyph/edouble"><?=lang("menu_e_double");?></a></li>
                 <!--li class="<?if ($menu=='contact'):?>active<?endif?>"><a href="#contact">Contact</a></li>
                 <li class="<?if ($menu=='signup'):?>active<?endif?>"><a href="#signup">Sign up</a></li-->
             </ul>

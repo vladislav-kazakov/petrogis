@@ -1,0 +1,1 @@
+tr[data-type=materials] .row .col-xs-6{    margin: 10px 0;    height: 180px;}tr[data-type=materials] img{    cursor: pointer;    border: solid 2px #e1e1e1;}tr[data-type=materials] img:hover{    border-color:#5cb85c;}tr[data-type=materials] img.selected{    border-color:#265a88;}.tools {    float: right;    margin-bottom: -30px;}

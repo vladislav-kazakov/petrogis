@@ -4,6 +4,7 @@ $lang["gis_petroglyphs"] = "ГИС Петроглифы";
 $lang["developing_in_nsu"] = "Разрабатывается в Новосибирском государственном университете";
 $lang["menu_map"] = "Карта";
 $lang["menu_petroglyphs"] = "Петроглифы";
+$lang["menu_e_double"] = "Когнитивное редактирование";
 $lang["hello"] = "Здравствуйте";
 $lang["login"] = "Войти";
 $lang["logout"] = "Выйти";

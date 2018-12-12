@@ -2,6 +2,8 @@
 
 class Petroglyph extends CI_Controller
 {
+    public $materials;
+
     public function index()
     {
         $logged_in = $this->user_model->logged_in();
@@ -291,6 +293,117 @@ class Petroglyph extends CI_Controller
         }
     }
 
+    public function _cloneMaterial($material_id, $petroglyph_id)
+    {
+        if (!$this->user_model->logged_in()) return;
+        if (!$this->user_model->admin()) return;
+
+        $material_id = (int)$material_id;
+        $petroglyph_id = (int)$petroglyph_id;
+
+        if ($material_id and $petroglyph_id) {
+            $this->load->model('material_model');
+            $material_from = $this->material_model->load($material_id);
+
+            $fstype = '';
+
+            if (preg_match("/\.[^\.]+$/i", $material_from->file, $matches)) {
+                $fstype = $matches[0];
+            }
+
+            $material_to = array(
+                'name' => $material_from->name,
+                'type' => $material_from->type,
+                'file' => uniqid() . $fstype,
+                'description' => $material_from->description,
+                'petroglyph_id' => $petroglyph_id,
+            );
+
+            $dir = FCPATH . 'data' . DIRECTORY_SEPARATOR . 'material' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR;
+
+            if (copy($dir . $material_from->file, $dir . $material_to['file'])) {
+                $this->material_model->save(null, $material_to);
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public function _imageToMaterial($petroglyph_id)
+    {
+        if (!$this->user_model->logged_in()) return;
+        if (!$this->user_model->admin()) return;
+
+        $petroglyph_id = (int)$petroglyph_id;
+
+        if ($petroglyph_id) {
+            $this->load->model('petroglyph_model');
+            $this->load->model('material_model');
+            $petroglyph = $this->petroglyph_model->load($petroglyph_id);
+
+            $fstype = '';
+
+            if (preg_match("/\.[^\.]+$/i", $petroglyph->image, $matches)) {
+                $fstype = $matches[0];
+            }
+
+            $material_to = array(
+                'name' => '',
+                'type' => 'image',
+                'file' => uniqid() . $fstype,
+                'description' => '',
+                'petroglyph_id' => $petroglyph_id,
+            );
+
+            $dir_image = FCPATH . 'data' . DIRECTORY_SEPARATOR . 'petroglyph' . DIRECTORY_SEPARATOR . 'image' . DIRECTORY_SEPARATOR;
+            $dir_material = FCPATH . 'data' . DIRECTORY_SEPARATOR . 'material' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR;
+
+            if (copy($dir_image . $petroglyph->image, $dir_material . $material_to['file'])) {
+                $this->material_model->save(null, $material_to);
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public function _cloneImage($from_petroglyph_id, $to_petroglyph_id)
+    {
+        if (!$this->user_model->logged_in()) return;
+        if (!$this->user_model->admin()) return;
+
+        $from_petroglyph_id = (int)$from_petroglyph_id;
+        $to_petroglyph_id = (int)$to_petroglyph_id;
+
+        if ($from_petroglyph_id and $to_petroglyph_id) {
+            $this->load->model('petroglyph_model');
+            $petroglyph = $this->petroglyph_model->load($from_petroglyph_id);
+
+            $fstype = '';
+
+            if (preg_match("/\.[^\.]+$/i", $petroglyph->image, $matches)) {
+                $fstype = $matches[0];
+            }
+
+            $data = array(
+                'image' => uniqid() . $fstype,
+            );
+
+            $dir = FCPATH . 'data' . DIRECTORY_SEPARATOR . 'petroglyph' . DIRECTORY_SEPARATOR . 'image' . DIRECTORY_SEPARATOR;
+
+            if (copy($dir . $petroglyph->image, $dir . $data['image'])) {
+                $this->petroglyph_model->save($to_petroglyph_id, $data);
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     public function _rotateImage($petroglyph_id, $degrees)
     {
         $this->load->helper('file');
@@ -339,7 +452,6 @@ class Petroglyph extends CI_Controller
 
     public function _clearcache($filename, $spec_path = false)
     {
-
         if (empty($filename)) return false;
 
         $res_arr = array(800, 1600);
@@ -348,6 +460,109 @@ class Petroglyph extends CI_Controller
             $filePath = $spec_path ? $spec_path . $res . "/" . $filename : "cache/petroglyph/image" . $res . "/" . $filename;
             if (file_exists($filePath)) unlink($filePath);
         }
+    }
+
+    public function eDouble()
+    {
+        if (!$this->user_model->logged_in() or !$this->user_model->admin()) {
+            redirect('welcome');
+        }
+
+        $this->load->model('petroglyph_model');
+
+        $petroglyphs = array();
+
+        foreach ($this->petroglyph_model->load_list() as $item) {
+            if ($item->image) {
+                $item->img_src = base_url() . "petroglyph/image/" . $item->id;
+            }
+
+            $item->materials = $this->material_model->load_list($item->id);
+            if (!empty($item->materials)) {
+                foreach ($item->materials as &$material) {
+                    $material->img_src = base_url() . "material/image/" . $material->id;
+                    $material->imgxl_src = base_url() . "material/imagexl/" . $material->id;
+                }
+            }
+
+            $petroglyphs[] = $item;
+        }
+
+        if ($post = $this->input->post() and $post['save']) {
+//            var_dump($post);
+//            die;
+            $left = $post['left'];
+            $right = $post['right'];
+
+            if (!empty($left['id']) and (int)$left['id']) {
+                $this->petroglyph_model->save($left['id'], $left);
+
+                if (isset($post['cloneMaterialFromRight']) and !empty($post['cloneMaterialFromRight'])) {
+                    foreach ($post['cloneMaterialFromRight'] as $item) {
+                        $material_id = substr($item, 1);
+                        $response = $this->_cloneMaterial($material_id, $left['id']);
+//                        todo: message
+                    }
+                }
+
+                if (isset($post['imageToMaterial']) and $post['imageToMaterial'] == 'left') {
+                    $response = $this->_imageToMaterial($left['id']);
+                }
+
+                if (isset($post['cloneImageFromRight']) and !empty($right['id']) and (int)$right['id']) {
+                    $response = $this->_cloneImage($right['id'], $left['id']);
+                }
+            } elseif ($left['name'] or $left['description']) {
+            }
+
+            if (!empty($right['id']) and (int)$right['id']) {
+                $this->petroglyph_model->save($right['id'], $right);
+
+                if (isset($post['cloneMaterialFromLeft']) and !empty($post['cloneMaterialFromLeft'])) {
+                    foreach ($post['cloneMaterialFromLeft'] as $item) {
+                        $material_id = substr($item, 1);
+                        $response = $this->_cloneMaterial($material_id, $right['id']);
+//                        todo: message
+                    }
+                }
+            } elseif ($right['name'] or $right['description']) {
+            }
+
+            if(isset($post['deleteMaterial']) and !empty($post['deleteMaterial'])) {
+                foreach ($post['deleteMaterial'] as $item) {
+                    $material_id = substr($item, 1);$material = $this->material_model->load($material_id);
+                    $material = $this->material_model->load($material_id);
+                    if ($material) {
+                        $dir = FCPATH . 'data' . DIRECTORY_SEPARATOR . 'material' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR;
+                        //remove old image file from fs
+                        if ($material->file && file_exists($dir . $material->file)) {
+                            unlink($dir . $material->file);
+                        }
+                        $this->material_model->delete($material_id);
+                    }
+                }
+            }
+
+
+//            die;
+            redirect('petroglyph/edouble');
+        }
+
+        $map_provider = 'google';
+
+        $this->load->view('header', array(
+            'menu' => 'e_double',
+            'page' => 'e_double',
+            'logged_in' => $this->user_model->logged_in(),
+            'username' => $this->user_model->get_user(),
+        ));
+
+        $this->load->view('petroglyph/e_double', array(
+            'json_petroglyphs' => json_encode($petroglyphs, JSON_UNESCAPED_UNICODE),
+            'map_provider' => $map_provider
+        ));
+
+        $this->load->view('footer');
     }
 }
 
