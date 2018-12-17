@@ -6,12 +6,16 @@ class Petroglyph_model extends CI_Model
     {
         $this->load->database();
     }
-    
+
     public function load_list()
     {
+        if (!$this->user_model->admin() and !$this->user_model->reviewer()) {
+            $this->db->where('is_public', TRUE);
+        }
+
         $this->db->where('deleted', FALSE);
-        if (!$this->user_model->admin()) $this->db->where('is_public', TRUE);
         $query = $this->db->get('petroglyphs');
+
         return $query->result();
     }
 
@@ -25,24 +29,23 @@ class Petroglyph_model extends CI_Model
 
     public function loadByUuid($uuid)
     {
-        if($uuid) {
+        if ($uuid) {
             $query = $this->db->get_where('petroglyphs', array('uuid' => $uuid));
             return $query->row();
-        }
-        else {
+        } else {
             return FALSE;
         }
     }
+
     public function load($id)
     {
         //$query = $this->db->get('petroglyphs');
         //return $query->result();
 
-        if($id != FALSE) {
+        if ($id != FALSE) {
             $query = $this->db->get_where('petroglyphs', array('id' => $id));
             return $query->row();
-        }
-        else {
+        } else {
             return FALSE;
         }
 
@@ -61,15 +64,12 @@ class Petroglyph_model extends CI_Model
         $result = false;
 //        $query = $this->db->get_where('petroglyphs', array('id' => $id));
 //        $petroglyph = $query->row();
-        if ($id)
-        {
+        if ($id) {
 //            if (!$petroglyph->uuid) $this->db->set('uuid', 'UUID()');
             $this->db->where('id', $id);
             $result = $this->db->update('petroglyphs', $data);
             if ($result) return $id;
-        }
-        else
-        {
+        } else {
             if (!isset($data['uuid'])) $this->db->set('uuid', 'UUID()', FALSE);
             $result = $this->db->insert('petroglyphs', $data);
             if ($result) return $this->db->insert_id();
