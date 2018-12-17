@@ -24,7 +24,7 @@ class User_model extends CI_Model
 
     public function reviewer()
     {
-        return (isset($_SESSION['auth_rights']) && $_SESSION['auth_rights'] == self::RIGHTS_REVIEWER);
+        return ($this->can(self::RIGHTS_REVIEWER));
     }
 
     public function get_user()
