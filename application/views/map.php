@@ -26,7 +26,7 @@
 <script type="text/javascript" src="/assets/js/jquery.cookie.js"></script>
 <?php if ($map_provider == 'google'):?>
     <script type="text/javascript" src="/assets/js/markerclusterer/src/markerclusterer.js"></script>
-    <script type="text/javascript" src = "/assets/js/map.js"></script>
+    <script type="text/javascript" src = "/assets/js/map.js?201812181648"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeYhPhJAnwj95GXDg5BRT7Q2dTj303dQU&callback=initMap&language=<?=lang("lang")==""?"ru":"en"?>"
             type="text/javascript"></script>
 <?php else:?>
