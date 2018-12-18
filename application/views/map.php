@@ -1,5 +1,13 @@
 <div class="bottom-20"></div>
 <div id="map_canvas" style="width:800px; height:600px; float:left; margin-right: 20px;"></div>
+
+<?php if ($admin or $reviewer): ?>
+        <input type="checkbox" id="hide-unpublished">
+        <label for="hide-unpublished">
+            <?= lang("hide unpublished") ?>
+        </label>
+<?php endif ?>
+
 <div>
     <a href="?map_provider=google">Google Maps</a>
     <a href="?map_provider=yandex">Yandex Maps</a>

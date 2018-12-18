@@ -1,6 +1,7 @@
 <?php defined('BASEPATH') or die('No direct access allowed.');
 
-class Map extends CI_Controller {
+class Map extends CI_Controller
+{
     public function index()
     {
         $logged_in = $this->user_model->logged_in();
@@ -15,29 +16,33 @@ class Map extends CI_Controller {
 
         $this->load->model('petroglyph_model');
 
-        if ($this->input->post('name')) 
-            $petroglyphs =$this->petroglyph_model->search($this->input->post('name'));
+        if ($this->input->post('name'))
+            $petroglyphs = $this->petroglyph_model->search($this->input->post('name'));
         else $petroglyphs = $this->petroglyph_model->load_list();
         $json_petroglyphs = array();
-        foreach($petroglyphs as $petroglyph) {
+        foreach ($petroglyphs as $petroglyph) {
             if ($petroglyph->lat == 0 || $petroglyph->lng == 0) continue;
-            $image = $petroglyph->image != null ? base_url() ."petroglyph/image/" . $petroglyph->id : null;
-            array_push($json_petroglyphs, array('id' => $petroglyph->id ,
-                                                'name' => $petroglyph->name,
-                                                'lat' => $petroglyph->lat,
-                                                'lng' => $petroglyph->lng,
-                                                'image' => $image
-                ));
+            $image = $petroglyph->image != null ? base_url() . "petroglyph/image/" . $petroglyph->id : null;
+            array_push($json_petroglyphs, array('id' => $petroglyph->id,
+                'name' => $petroglyph->name,
+                'lat' => $petroglyph->lat,
+                'lng' => $petroglyph->lng,
+                'image' => $image,
+                'is_public' => $petroglyph->is_public,
+            ));
         }
         $map_provider = 'google';
-        if (isset($_GET['map_provider']))
-        {
-            setcookie('map_provider', $_GET['map_provider'], time()+60*60*24*30 , "/");
+        if (isset($_GET['map_provider'])) {
+            setcookie('map_provider', $_GET['map_provider'], time() + 60 * 60 * 24 * 30, "/");
             $map_provider = $_GET['map_provider'];
-        }
-        else if (isset($_COOKIE['map_provider']) && $_COOKIE['map_provider'] == 'yandex') $map_provider = 'yandex';
-        $json_petroglyphs = json_encode ($json_petroglyphs, JSON_UNESCAPED_UNICODE);
-        $this->load->view('map', array('json_petroglyphs' => $json_petroglyphs, 'map_provider' => $map_provider));
+        } else if (isset($_COOKIE['map_provider']) && $_COOKIE['map_provider'] == 'yandex') $map_provider = 'yandex';
+        $json_petroglyphs = json_encode($json_petroglyphs, JSON_UNESCAPED_UNICODE);
+        $this->load->view('map', array(
+            'json_petroglyphs' => $json_petroglyphs,
+            'map_provider' => $map_provider,
+            'admin' => $this->user_model->admin(),
+            'reviewer' => $this->user_model->reviewer(),
+        ));
 
         $this->load->view('footer');
     }

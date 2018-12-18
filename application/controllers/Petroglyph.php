@@ -19,7 +19,8 @@ class Petroglyph extends CI_Controller
         $petroglyphs = $this->petroglyph_model->load_list();
         $this->load->view('petroglyph/list', array(
             'petroglyphs' => $petroglyphs,
-            'admin' => $this->user_model->admin()
+            'admin' => $this->user_model->admin(),
+            'reviewer' => $this->user_model->reviewer(),
             //'message' => $_SERVER['REQUEST_URI']
         ));
         //$_SESSION['referrer'] = $_SERVER['REQUEST_URI'];
