@@ -2,7 +2,7 @@
 <div id="map_canvas" style="width:800px; height:600px; float:left; margin-right: 20px;"></div>
 
 <?php if ($admin or $reviewer): ?>
-        <input type="checkbox" id="hide-unpublished">
+        <input type="checkbox" id="hide-unpublished"<?= (isset($_COOKIE['hide_unpublished']) and $_COOKIE['hide_unpublished'] == 1) ? ' checked' : null ?>>
         <label for="hide-unpublished">
             <?= lang("hide unpublished") ?>
         </label>

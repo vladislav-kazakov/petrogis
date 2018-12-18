@@ -137,6 +137,7 @@ function initMap() {
         var expires = ";expires=" + d.toUTCString();
 
         document.cookie = "map_center=" + JSON.stringify(map.getCenter().toJSON()) + expires + ";path=/";
+        hide_unpublished();
         //console.log(document.cookie);
     });
     map.addListener('zoom_changed', function () {
@@ -145,6 +146,7 @@ function initMap() {
         var expires = ";expires=" + d.toUTCString();
 
         document.cookie = "map_zoom=" + map.zoom + expires + ";path=/";
+        hide_unpublished();
         //console.log(document.cookie);
     });
     map.addListener('maptypeid_changed', function () {
@@ -153,6 +155,7 @@ function initMap() {
         var expires = ";expires=" + d.toUTCString();
 
         document.cookie = "map_type=" + map.getMapTypeId() + expires + ";path=/";
+        hide_unpublished();
     });
 
     initialize_markers(arr);
@@ -225,13 +228,6 @@ function initialize_markers(arr) {
         })(marker, infowindow, arr[i]));
     }
 
-    google.maps.event.addListenerOnce(map, 'idle', function(){
-        if ($.cookie("hide_unpublished") != undefined && $.cookie("hide_unpublished") == 1) {
-            $('#hide-unpublished').attr('checked', 'checked');
-            hide_unpublished();
-        }
-    });
-
     var markerClusterer = new MarkerClusterer(map, markers,
         {
             imagePath: '/assets/js/markerclusterer/images/m',
@@ -240,20 +236,6 @@ function initialize_markers(arr) {
             styles: null
         }
     );
-}
-
-function hide_unpublished() {
-    var is_hide = $.cookie("hide_unpublished") ? $.cookie("hide_unpublished") : 0;
-
-    if (is_hide == 1) {
-        $.each(arr, function (i, item) {
-            if (item['is_public'] == 1) {
-                markers[i].setMap(null);
-            }
-        })
-    } else {
-        setMapOnAll(map);
-    }
 }
 
 function addMarker(location) {
@@ -268,15 +250,9 @@ function addMarker(location) {
     return marker;
 }
 
-function setMapOnAll(map) {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(map);
-    }
-}
-
 $('#hide-unpublished').click(function () {
     let is_hide = $.cookie("hide_unpublished") ? $.cookie("hide_unpublished") : 0;
     is_hide = is_hide == 1 ? 0 : 1;
     document.cookie = "hide_unpublished=" + is_hide + ";path=/";
-    hide_unpublished();
+    location.reload();
 });
