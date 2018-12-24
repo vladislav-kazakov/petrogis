@@ -137,7 +137,6 @@ function initMap() {
         var expires = ";expires=" + d.toUTCString();
 
         document.cookie = "map_center=" + JSON.stringify(map.getCenter().toJSON()) + expires + ";path=/";
-        hide_unpublished();
         //console.log(document.cookie);
     });
     map.addListener('zoom_changed', function () {
@@ -146,7 +145,6 @@ function initMap() {
         var expires = ";expires=" + d.toUTCString();
 
         document.cookie = "map_zoom=" + map.zoom + expires + ";path=/";
-        hide_unpublished();
         //console.log(document.cookie);
     });
     map.addListener('maptypeid_changed', function () {
@@ -155,7 +153,6 @@ function initMap() {
         var expires = ";expires=" + d.toUTCString();
 
         document.cookie = "map_type=" + map.getMapTypeId() + expires + ";path=/";
-        hide_unpublished();
     });
 
     initialize_markers(arr);
