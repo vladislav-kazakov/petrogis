@@ -16,10 +16,10 @@ class Material extends CI_Controller
     {
         $this->load->helper('file');
 
-        $logged_in = $this->user_model->logged_in();
-        if (!$logged_in) redirect('welcome');
-
         $material = $this->material_model->load($material_id);
+
+        $petroglyph = $this->petroglyph_model->load($material->petroglyph_id);
+        if (!$petroglyph->is_public) redirect('welcome');
 
         if ($material->file) {
             $filePath = "cache/material/file" . $res . "/" . $material->file;
