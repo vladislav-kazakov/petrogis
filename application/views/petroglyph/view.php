@@ -49,6 +49,7 @@
         </div>
     </div>
     <div class="clearfix"></div>
+    <?php if ($logged_in): ?>
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -60,6 +61,7 @@
             </ul>
         </div>
     </div>
+    <?php endif; ?>
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
