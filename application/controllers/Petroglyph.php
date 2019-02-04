@@ -74,11 +74,9 @@ class Petroglyph extends CI_Controller
     {
         $this->load->helper('file');
 
-        $logged_in = $this->user_model->logged_in();
-        if (!$logged_in) redirect('welcome');
-
         $this->load->model('petroglyph_model');
         $petroglyph = $this->petroglyph_model->load($petroglyph_id);
+        if (!$petroglyph->is_public) redirect('welcome');
 
         if ($petroglyph->image) {
             $filePath = "cache/petroglyph/image" . $res . "/" . $petroglyph->image;
