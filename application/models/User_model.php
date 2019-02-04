@@ -78,6 +78,10 @@ class User_model extends CI_Model
 
     public function can($role)
     {
+        if (!isset($_SESSION['auth_user'])) {
+            return false;
+        }
+
         $query = $this->db->get_where('users', array(
             'login' => $_SESSION['auth_user'],
             'rights' => $role

@@ -7,12 +7,11 @@ class Petroglyph extends CI_Controller
     public function index()
     {
         $logged_in = $this->user_model->logged_in();
-        if (!$logged_in) redirect('welcome');
 
         $this->load->view('header', array(
             'menu' => 'petroglyph',
             'logged_in' => $logged_in,
-            'username' => $this->user_model->get_user()
+            'username' => $logged_in ? $this->user_model->get_user() : 'Guest'
         ));
 
         $this->load->model('petroglyph_model');
@@ -31,7 +30,6 @@ class Petroglyph extends CI_Controller
     public function view($id = NULL)
     {
         $logged_in = $this->user_model->logged_in();
-        if (!$logged_in) redirect('welcome');
 
         $this->load->view('header', array(
             'menu' => 'petroglyph',
