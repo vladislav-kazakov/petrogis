@@ -6,6 +6,7 @@ class Login extends CI_Controller {
         // Handled from a form with inputs with names email / password
 
         $success =  $this->user_model->login($this->input->post('email'), $this->input->post('password'));
+		
         if ($success) {
             // Login successful, send to app
             //print_r($this->request->referrer());exit;

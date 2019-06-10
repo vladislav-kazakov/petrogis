@@ -3,8 +3,12 @@
 </script>
 <?php if (isset($message)) echo $message; ?>
 <h1><?= lang("list_of_petroglyphs") ?></h1>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
-<?php if ($admin or $reviewer): ?>
+<a href="petroglyph/viewtable/"><i title="Отобразить в виде таблицы" class="fa fa-table" aria-hidden="true"></i></a>
+<a href="petroglyph/viewpictu/"><i title="Отобразить в виде галереи" class="fa fa-th" aria-hidden="true"></i></a>
+<?php
+if ($admin or $reviewer): ?>
     <div class="clearfix">
         <input type="checkbox" id="hide-unpublished">
         <label for="hide-unpublished">
