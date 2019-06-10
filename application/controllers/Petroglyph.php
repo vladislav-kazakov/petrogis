@@ -1,4 +1,6 @@
-<?php defined('BASEPATH') or die('No direct access allowed.');
+<?php use Sightengine\SightengineClient;
+
+defined('BASEPATH') or die('No direct access allowed.');
 
 class Petroglyph extends CI_Controller
 {
@@ -17,6 +19,64 @@ class Petroglyph extends CI_Controller
         $this->load->model('petroglyph_model');
         $petroglyphs = $this->petroglyph_model->load_list();
         $this->load->view('petroglyph/list', array(
+            'petroglyphs' => $petroglyphs,
+            'admin' => $this->user_model->admin(),
+            'reviewer' => $this->user_model->reviewer(),
+            //'message' => $_SERVER['REQUEST_URI']
+        ));
+        //$_SESSION['referrer'] = $_SERVER['REQUEST_URI'];
+
+        $this->load->view('footer');
+    }
+
+    public function viewtable()
+    {
+        $logged_in = $this->user_model->logged_in();
+
+        $this->load->view('header', array(
+            'menu' => 'petroglyph',
+            'logged_in' => $logged_in,
+            'username' => $logged_in ? $this->user_model->get_user() : 'Guest'
+        ));
+        $orderlist = null;
+        if(isset($_GET['choosesort'])) {
+            $orderlist = $_GET['choosesort'];
+        }
+        $sort=null;
+
+        if(isset($_GET['ASC'])){
+        $sort=$_GET['ASC'];}
+
+        if(isset($_GET['DESC'])){
+        $sort=$_GET['DESC'];}
+
+        echo $orderlist," - ",$sort;
+        $this->load->model('petroglyph_model');
+        $petroglyphs = $this->petroglyph_model->load_list($orderlist,$sort);
+        $this->load->view('petroglyph/table', array(
+            'petroglyphs' => $petroglyphs,
+            'admin' => $this->user_model->admin(),
+            'reviewer' => $this->user_model->reviewer(),
+            //'message' => $_SERVER['REQUEST_URI']
+        ));
+        //$_SESSION['referrer'] = $_SERVER['REQUEST_URI'];
+
+        $this->load->view('footer');
+    }
+
+    public function viewpictu()
+    {
+        $logged_in = $this->user_model->logged_in();
+
+        $this->load->view('header', array(
+            'menu' => 'petroglyph',
+            'logged_in' => $logged_in,
+            'username' => $logged_in ? $this->user_model->get_user() : 'Guest'
+        ));
+
+        $this->load->model('petroglyph_model');
+        $petroglyphs = $this->petroglyph_model->load_list();
+        $this->load->view('petroglyph/pictu', array(
             'petroglyphs' => $petroglyphs,
             'admin' => $this->user_model->admin(),
             'reviewer' => $this->user_model->reviewer(),
@@ -50,13 +110,24 @@ class Petroglyph extends CI_Controller
         $materials = $this->material_model->load_list($petroglyph_id);
         $this->load->vars('materials', $materials);
 
-        //$_SESSION['referrer'] =  $_SERVER['REQUEST_URI'];
+        $img_src = "data/petroglyph/image/" . $petroglyph->image;
+        $dopParam="";
+        exec('exiftool.exe  '.$img_src.'',$dopParam);
+        print_r($dopParam);
 
+        $exif=array();
+        foreach ($dopParam as $key => $val) {
+            $dopexp = explode(":", $val);
+            $exif[trim($dopexp[0])] = trim($dopexp[1]);
+        }
+        print_r($exif);
+
+        //$_SESSION['referrer'] =  $_SERVER['REQUEST_URI'];
         //$this->load->vars('message', $_SERVER['REQUEST_URI']);
+
 
         $this->load->view('petroglyph/view', array(
             'petroglyph' => $petroglyph));
-
         $this->load->view('footer');
     }
 
@@ -70,13 +141,29 @@ class Petroglyph extends CI_Controller
         return $this->_image($petroglyph_id, 1600);
     }
 
+    public function imagesc($petroglyph_id)
+    {
+        $logged_in = $this->user_model->logged_in();
+
+        $this->load->model('petroglyph_model');
+        $petroglyph = $this->petroglyph_model->load($petroglyph_id);
+
+        $this->load->view('petroglyph/viewinframe', array(
+            'petroglyph' => $petroglyph
+
+        ));
+        //$_SESSION['referrer'] = $_SERVER['REQUEST_URI'];
+
+
+    }
+
     public function _image($petroglyph_id, $res = 800)
     {
         $this->load->helper('file');
 
         $this->load->model('petroglyph_model');
         $petroglyph = $this->petroglyph_model->load($petroglyph_id);
-        if (!$petroglyph->is_public) redirect('welcome');
+        //if (!$petroglyph->is_public) redirect('welcome');
 
         if ($petroglyph->image) {
             $filePath = "cache/petroglyph/image" . $res . "/" . $petroglyph->image;
@@ -122,7 +209,7 @@ class Petroglyph extends CI_Controller
 
             $result = $this->petroglyph_model->save($petroglyph_id, $data);
             if ($result) {
-                if ($_FILES) $this->_upload($result);
+                if ($_FILES) $this->_upload($result); // сохраняется изображение
 
                 $rotate = $this->input->post('imageRotate');
                 if ($rotate) {
@@ -242,6 +329,57 @@ class Petroglyph extends CI_Controller
                 //remove old image file from fs
                 if ($petroglyph && $petroglyph->image && file_exists($dir . $petroglyph->image)) unlink($dir . $petroglyph->image);
                 $this->petroglyph_model->save($petroglyph_id, array("image" => $fsname));
+
+                //просчет масштаба
+                $metadIm1="";
+                $img_src = "data/petroglyph/image/".$petroglyph->image;
+                exec('exiftool.exe  '.$img_src.'',$metadIm1);
+
+                //CameraName
+                foreach ($metadIm1 as  $key=>$val){
+                    if (stripos($val, 'Camera Model Name')!==false){
+                        $keyNameCam = $key;
+                    }
+                }
+                $CamName = explode(": ", $metadIm1[$keyNameCam]);
+                $CameraNameModel=str_replace(' ','',$CamName[1]);
+                $dia1=0;
+                $Name=str_replace(' ', '',(mb_strtolower($CameraNameModel)));
+                $os = array("pentax", "canon", "sony", "nikon","panasonic","ricoh","kodak","sigma","protax","dexp","lytro","leica");
+                foreach ($os as  $val) {
+                    if (stripos($Name, $val) !== false) {
+                        $dia1= "нашел";}
+                }
+                if ($dia1){
+                    //echo "ФОТОАППАРАТ";
+                        include 'application/helpers/cams/' . $CameraNameModel . '.php';
+                        $arrWithX = calculate($metadIm1);
+                        $this->petroglyph_model->save($petroglyph_id, array("photo_x" => $arrWithX[0], "FocusDistance" => $arrWithX[1],
+                            "NameModel" => $CameraNameModel));
+                    } else {
+                        //echo "ТЕЛЕФОН";
+                        $this->petroglyph_model->save($petroglyph_id, array("NameModel" => "ТЕЛЕФОН", "FocusDistance" => "Нет данных"));
+                    }
+
+                //доп.параметры
+                $dopParam="";
+                exec('exiftool.exe  '.$img_src.'',$dopParam);
+                include 'application/helpers/hparam.php';
+                $arr = showgen($dopParam);
+                $this->petroglyph_model->save($petroglyph_id, array("ISO" => $arr[0], "Diaphragma" => $arr[1], "ModelLens"=> $arr[2],
+                "xRes" => $arr[3], "yRes" => $arr[4], "exposure" => $arr[5]));
+
+        $client = new SightengineClient('543013388', 'BFEviAZFp9cyqXv6YKPt');
+        $output = $client->check(['properties'])->set_file($dir.$fsname);
+
+        $variant1=$output->sharpness;
+        $variant2=$output->brightness;
+        $variant3=$output->contrast;
+        $lev_ql=(($variant1*1)+($variant2*0.8)+($variant3*0.7))/3;
+        $lev_qual=round($lev_ql,2);
+
+                $this->petroglyph_model->save($petroglyph_id, array("sharp" => $variant1, "brightn" =>$variant2,"contr" => $variant3,"level_quality"=>$lev_qual));
+
             } else {
                 //todo: handle file upload error
             }
@@ -284,6 +422,26 @@ class Petroglyph extends CI_Controller
                 //remove old image file from fs
                 if ($material && $material->file && file_exists($dir . $material->file)) unlink($dir . $material->file);
                 $this->material_model->save($material_id, array("file" => $fsname));
+
+                //просчет масштаба
+                $metadIm1="";
+                $img_src = "data/material/file" . $material->file;
+                exec('exiftool.exe  '.$img_src.'',$metadIm1);
+
+                //CameraName
+                foreach ($metadIm1 as  $key=>$val){
+                    if (stripos($val, 'Camera Model Name')!==false){
+                        $keyNameCam = $key;
+                    }
+                }
+                $CamName = explode(": ", $metadIm1[$keyNameCam]);
+                $CameraNameModel=str_replace(' ','',$CamName[1]);
+                include 'application/helpers/cams/'.$CameraNameModel.'.php';
+                $X_kadra=calculate($metadIm1);
+                $this->material_model->save($material_id, array("photo_x" => $X_kadra));
+
+
+
             } else {
                 //todo: handle file upload error
             }

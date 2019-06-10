@@ -46,6 +46,7 @@ class User_model extends CI_Model
         }
 
         $user = $this->load($username, $password);
+		
         if ($user) {
             // Complete the login
 //            $_SESSION['auth_rights'] = $user->rights;
