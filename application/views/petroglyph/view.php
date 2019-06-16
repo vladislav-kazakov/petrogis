@@ -104,6 +104,9 @@ echo "<p><b>Обратите внимание на плохое разрешен
                 }//мм
 
                 function drawScale() {
+                    ctx.fillStyle = "#e0e0e0";
+                    ctx.fillRect(5, das - 45, (oneSM * 5)+35, 38)
+
                     ctxScale.fillStyle = "white";
                     ctxScale.fillRect(0, das - 20, oneSM * 5, 10)
 
@@ -165,7 +168,7 @@ echo "<p><b>Обратите внимание на плохое разрешен
             h2=(h/oneSMSer).toFixed(2);
             document.getElementById("mlin").value= h2+" см";
             ctxScale.fillStyle = "white";
-            ctxScale.fillRect(x+5, y-20, 40, 15)
+            ctxScale.fillRect(x+5, y-20, 45, 15)
             ctxScale.strokeText(h2+" см", x+10, y-10);
         };
 

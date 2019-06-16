@@ -1,0 +1,26 @@
+.tooltip {
+    color: #000000; outline: none;
+    cursor: help; text-decoration: none;
+    position: relative;
+}
+.tooltip span {
+    display: none;
+    position: absolute;
+}
+.tooltip:hover span {
+    position: absolute;
+    z-index: 99;
+    display: inline;
+    width: 250px;
+}
+.tooltipIM {
+    margin: -15px 0 0 -20px;
+    float: left;
+
+}
+
+.classic { padding: 0.5em; }
+.custom { padding: 0.5em;}
+
+.classic { background: #dce6f7; border: 1px solid #6982ad; }
+.warning { background: #FFFFAA; border: 1px solid #d3ba15; }
