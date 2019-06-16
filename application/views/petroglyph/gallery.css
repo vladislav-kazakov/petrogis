@@ -1,0 +1,42 @@
+img {
+    width: 200px;
+    height: 140px;
+    border: 2px #CCCCCC solid;
+    border-radius: 10px;
+}
+a.toolt {
+    color: #000000; outline: none;
+    cursor: help; text-decoration: none;
+    position: relative;
+    width: 200px;
+    margin-left: 14px;
+
+}
+a.toolt span {
+    display: none;
+    position: absolute;
+}
+a.toolt:hover span {
+    position: absolute;
+    z-index: 99;
+    display: inline;
+    width: 200px;
+}
+.tooltipIM {
+    margin: -15px 0 0 -20px;
+    float: left;
+    height:20px;
+    width:20px;
+}
+.classic {
+    padding: 0.5em;
+    background: #dce6f7;
+    border: 1px solid #6982ad;
+    border-radius: 5px;
+}
+.warning {
+    padding: 0.5em;
+    background: #FFFFAA;
+    border: 1px solid #d3ba15;
+    border-radius: 5px;
+}

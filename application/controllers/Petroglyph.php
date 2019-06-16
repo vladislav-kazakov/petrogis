@@ -113,14 +113,33 @@ class Petroglyph extends CI_Controller
         $img_src = "data/petroglyph/image/" . $petroglyph->image;
         $dopParam="";
         exec('exiftool.exe  '.$img_src.'',$dopParam);
-        print_r($dopParam);
+        //print_r($dopParam);
 
-        $exif=array();
-        foreach ($dopParam as $key => $val) {
-            $dopexp = explode(":", $val);
-            $exif[trim($dopexp[0])] = trim($dopexp[1]);
+        if ($petroglyph->photo_x == 0) {
+            foreach ($dopParam as $key => $val) {
+                if (stripos($val, 'Camera Model Name') !== false) {
+                    $keyNameCam = $key;
+                }
+            }
+            $CamName = explode(": ", $dopParam[$keyNameCam]);
+            $CameraNameModel = str_replace(' ', '', $CamName[1]);
+            $dia1 = 0;
+            $Name = str_replace(' ', '', (mb_strtolower($CameraNameModel)));
+            $os = array("pentax", "canon", "sony", "nikon", "panasonic", "ricoh", "kodak", "sigma", "protax", "dexp", "lytro", "leica");
+            foreach ($os as $val) {
+                if (stripos($Name, $val) !== false) {
+                    $dia1 = "нашел";
+                }
+            }
+            if ($dia1) {
+                //"ФОТОАППАРАТ";
+                include 'application/helpers/cams/' . $CameraNameModel . '.php';
+                $arrWithX = calculate($dopParam);
+                $this->petroglyph_model->save($petroglyph_id, array("photo_x" => $arrWithX[0], "FocusDistance" => $arrWithX[1],
+                    "NameModel" => $CameraNameModel));
+            }
         }
-        print_r($exif);
+
 
         //$_SESSION['referrer'] =  $_SERVER['REQUEST_URI'];
         //$this->load->vars('message', $_SERVER['REQUEST_URI']);
@@ -332,9 +351,8 @@ class Petroglyph extends CI_Controller
 
                 //просчет масштаба
                 $metadIm1="";
-                $img_src = "data/petroglyph/image/".$petroglyph->image;
+                $img_src = "data/petroglyph/image/".$fsname;
                 exec('exiftool.exe  '.$img_src.'',$metadIm1);
-
                 //CameraName
                 foreach ($metadIm1 as  $key=>$val){
                     if (stripos($val, 'Camera Model Name')!==false){
@@ -362,10 +380,9 @@ class Petroglyph extends CI_Controller
                     }
 
                 //доп.параметры
-                $dopParam="";
-                exec('exiftool.exe  '.$img_src.'',$dopParam);
                 include 'application/helpers/hparam.php';
-                $arr = showgen($dopParam);
+                $arr = showgen($metadIm1);
+
                 $this->petroglyph_model->save($petroglyph_id, array("ISO" => $arr[0], "Diaphragma" => $arr[1], "ModelLens"=> $arr[2],
                 "xRes" => $arr[3], "yRes" => $arr[4], "exposure" => $arr[5]));
 
